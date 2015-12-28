@@ -2,7 +2,6 @@ class Config:
     SECRET_KEY = "AwooIsNaiveSoDoNotMockAtMe"
      
     #SQLalchemy
-    SQLALCHEMY_DATABASE_URI = "sqlite:///Awoo.db"
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_RECORD_QUERIES = True
     
@@ -25,13 +24,22 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
+    SQLALCHEMY_DATABASE_URI = "sqlite:///Awoo.db"
 
 class ProductionConfig(Config):
     DEBUG = False
+    SQLALCHEMY_DATABASE_URI = "sqlite:///Awoo_pro.db"
+
+class TestConfig(Config):
+    DEBUG = True
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = "sqlite:///Awoo_test.db"
+    LIVESERVER_PORT = 8901
 
 config = {
     'development': DevelopmentConfig,
     'production': ProductionConfig,
+    'test': TestConfig,
 
     'default': DevelopmentConfig
 }

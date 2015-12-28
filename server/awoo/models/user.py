@@ -39,4 +39,3 @@ class User(UserMixin, db.Model):
        #    self.send_email(subject='Welcome to FLAME', template='email/greeting',
        #                    user=self, async=async_mail)
 
-
