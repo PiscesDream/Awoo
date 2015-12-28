@@ -1,9 +1,9 @@
 Awoo
-![alt tag](http://blogs.scientificamerican.com/media/inline/blog/Image/8-19-wolf_howl.jpg)
 ---
 
 - Awoo is a chat framework on both server and client. 
 It uses RESTful to transfer data so that you can extend it to the webpages. 
 The server is based on [Flask](http://flask.pocoo.org/) and the local platform is based on [WPF](https://msdn.microsoft.com/en-us/library/ms754130(v=vs.110).aspx).
 
-picture from [scientificamerican](http://blogs.scientificamerican.com/media/inline/blog/Image/8-19-wolf_howl.jpg)
+![alt tag](http://blogs.scientificamerican.com/media/inline/blog/Image/8-19-wolf_howl.jpg)
+(picture from [scientificamerican](http://blogs.scientificamerican.com/media/inline/blog/Image/8-19-wolf_howl.jpg))
