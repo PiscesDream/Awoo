@@ -1,4 +1,5 @@
 Awoo
+![alt tag](http://blogs.scientificamerican.com/media/inline/blog/Image/8-19-wolf_howl.jpg)
 ---
 
 - Awoo is a chat framework on both server and client. 
