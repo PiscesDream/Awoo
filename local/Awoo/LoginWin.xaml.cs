@@ -12,32 +12,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-using System.Runtime.InteropServices;
-using System.Windows.Interop;
-
 using RestSharp;
 
 namespace Awoo
 {
-    public class LoginForm
-    {
-        public string username { get; set;}
-        public string password { get; set;}
-
-        public LoginForm(string un, string pwd)
-        {
-            this.username = un;
-            this.password = pwd;
-        }
-    }
-    public class LoginRespond
-    {
-        public string reply { get; set;}
-        public string token { get; set;}
-    }
-
-
-
     /// <summary>
     /// LoginWin.xaml 的交互逻辑
     /// </summary>
@@ -53,38 +31,22 @@ namespace Awoo
             this.Close();
         }
 
-        // move window
-        public const int WM_NCLBUTTONDOWN = 0xA1;
-        public const int HT_CAPTION = 0x2;
-        [DllImportAttribute("user32.dll")]
-        public static extern int SendMessage(IntPtr hWnd, int Msg,
-                int wParam, int lParam);
-
-        [DllImportAttribute("user32.dll")]
-        public static extern bool ReleaseCapture();
-
         public void move_window(object sender, MouseButtonEventArgs e)
         {
-            ReleaseCapture();
-            SendMessage(new WindowInteropHelper(this).Handle,
-                WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+            Shared.move_window(this);
         }
 
         private void LoginBtn_Click(object sender, RoutedEventArgs e)
         {
-            var client = new RestClient("http://localhost:5000/");
-            var request = new RestRequest("/api/login", Method.POST);
+            ReplyLogin response = 
+                Shared.sendrecvjson<FormLogin, ReplyLogin>
+                (Shared.HOST, "/api/login", new FormLogin(UnInput.Text, PwdInput.Password));
 
-            //request.AddHeader("Content-type", "application/json; charset=utf-8");
-            request.RequestFormat = RestSharp.DataFormat.Json;
-            LoginForm loginform = new LoginForm(UnInput.Text, PwdInput.Password);
-            request.AddBody(loginform);
-
-            IRestResponse<LoginRespond> response = client.Execute<LoginRespond>(request);
-            MessageBox.Show(response.Data.reply);
-            if (response.Data.reply == "logged in")
-            {
-
+            MessageBox.Show(response.reply);
+            if (response.reply == "logged in") {
+                MainWin mainwin = new MainWin(UnInput.Text, response.token);
+                mainwin.Show();
+                this.Close();
             } 
         }
 

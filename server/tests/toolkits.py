@@ -27,10 +27,9 @@ def fetchmsg(username, token):
 
 def sendmsg(username, token, receiver, message):
     res = sendrecvjson(
-            'http://127.0.0.1:5000/api/msg/send'
+            'http://127.0.0.1:5000/api/msg/send',
             {'username': username, 'token': token,
-             'receiver': receiver, 'message': message}
-            )
+             'receiver': receiver, 'message': message})
     return res
 
 if __name__ == '__main__':

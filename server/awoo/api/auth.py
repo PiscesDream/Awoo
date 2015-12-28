@@ -19,6 +19,7 @@ def logout():
         return jsonify(reply="incorrect token")
 
     user.token = '' 
+    user.status = User.STATUS_OFFLINE
     db.session.add(user); db.session.commit()
     return jsonify(reply="logged out")
 
@@ -35,6 +36,7 @@ def login():
         return jsonify(reply="incorrect password")
 
     user.token = randomstr(128)
+    user.status = User.STATUS_ONLINE
     db.session.add(user)
     db.session.commit()
     return jsonify(reply="logged in", token=user.token)

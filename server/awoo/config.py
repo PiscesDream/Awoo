@@ -18,6 +18,10 @@ class Config:
     FLASKY_MAIL_SUBJECT_PREFIX = 'Awoo@Hapd'
     FLASKY_MAIL_SENDER = 'Awoo.hapd <Awoo.hapd@outlook.com>'
 
+    import base64
+    with open("awoo/Awoo_64.jpg", "rb") as image_file:
+        DEFAULT_AVATAR = base64.b64encode(image_file.read())
+
     @staticmethod
     def init_app(app):
         pass
