@@ -24,6 +24,7 @@ namespace Awoo
         public LoginWin()
         {
             InitializeComponent();
+            hostinput.Text = Shared.HOST;
         }
 
         private void ExitBtn_Click(object sender, RoutedEventArgs e)
@@ -38,13 +39,23 @@ namespace Awoo
 
         private void LoginBtn_Click(object sender, RoutedEventArgs e)
         {
-            ReplyLogin response = 
-                Shared.sendrecvjson<FormLogin, ReplyLogin>
-                (Shared.HOST, "/api/login", new FormLogin(UnInput.Text, PwdInput.Password));
+            ReplyLogin res = new ReplyLogin();
+            try
+            {
+                Shared.HOST = hostinput.Text;
+                res =
+                    Shared.sendrecvjson<FormLogin, ReplyLogin>
+                    (Shared.HOST, "/api/login", new FormLogin(UnInput.Text, PwdInput.Password));
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Cannot login, please connect with your service provider.", "Error");
+            }
 
-            MessageBox.Show(response.reply);
-            if (response.reply == "logged in") {
-                MainWin mainwin = new MainWin(UnInput.Text, response.token);
+
+            MessageBox.Show(res.reply);
+            if (res.reply == "logged in") {
+                MainWin mainwin = new MainWin(UnInput.Text, res.token);
                 mainwin.Show();
                 this.Close();
             } 

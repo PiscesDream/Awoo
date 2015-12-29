@@ -47,6 +47,7 @@ namespace Awoo
 
             Fusername.Content = res.username;
             Fintro.Content = res.intro;
+            Favatar.Source = Shared.Base64ToImage(res.avatar);
         }
 
         public void fetchMsg()

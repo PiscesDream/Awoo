@@ -10,7 +10,6 @@ def fakedata(db):
     print 'creating ...'
     db.create_all()
 
-    u1 = User(username='admin', password='123456')
 
     u1 = User(username='admin', password='123456')
     u2 = User(username='test', password='123456')
@@ -47,8 +46,14 @@ def fakedata(db):
         msg5, msg6, msg7, msg8])
     db.session.commit()
 
+    admin = User.query.first()
     u1 = User(username='HZL', password='lalala')
-    db.session.add(u1)
+    u2 = User(username='june', password='lalala')
+    db.session.add_all([u1, u2])
+    u1.makeFriend(admin)
+    u2.makeFriend(admin)
+    u1.makeFriend(u2)
+    db.session.add_all([u1, u2, admin])
     db.session.commit()
 
     print 'done.'
