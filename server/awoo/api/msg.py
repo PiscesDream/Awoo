@@ -8,6 +8,49 @@ from ..toolkits.randomgen import randomstr
 def fetchmsg():
     data = request.get_json()
     username = data.get('username', '')
+    fusername = data.get('fusername', '')
+    token = data.get('token', '')
+    
+    user = User.query.filter_by(username=username).first()
+    fuser = User.query.filter_by(username=fusername).first()
+    if not user:
+        return jsonify(reply="invalid username")
+    if not fuser:
+        return jsonify(reply="invalid friend username")
+    if user.token == '':
+        return jsonify(reply="user haven't logged in yet")
+    if user.token != token:
+        return jsonify(reply="incorrect token")
+
+    msgs = []
+    queries = Message.query.filter_by(\
+            sender_id=fuser.id, \
+            recver_id=user.id, \
+            read=False).all()
+    for msg in queries:
+        sender = User.query.get(msg.sender_id)
+        recver = User.query.get(msg.recver_id)
+        msgs.append({
+            'sender_id': sender.id,
+            'sender': sender.username,
+            'timestamp': msg.timestamp,
+            'content': msg.content
+        })
+        msg.read = True
+#   print user
+#   print fuser
+#   print msgs
+    print user.username, '->', msgs
+    db.session.add_all(queries)
+#    db.session.delete(queries)
+    db.session.commit()
+    return jsonify(reply="succeed", messages=msgs)
+
+
+@api.route('/msg/fetch/all', methods=["POST"])
+def fetchmsgall():
+    data = request.get_json()
+    username = data.get('username', '')
     token = data.get('token', '')
     
     user = User.query.filter_by(username=username).first()
@@ -29,13 +72,11 @@ def fetchmsg():
             'timestamp': msg.timestamp,
             'content': msg.content
         }) 
-        msg.read = True
-    db.session.add_all(queries)
+#        msg.read = True
+#    db.session.add_all(queries)
 #    db.session.delete(queries)
-    db.session.commit()
-
+#    db.session.commit()
     return jsonify(reply="succeed", messages=msgs)
-
 
 @api.route('/msg/send', methods=["POST"])
 def sendmsg():
@@ -59,6 +100,11 @@ def sendmsg():
     m = Message(user, recver, message)
     db.session.add(m)
     db.session.commit()
-    return jsonify(reply="succeed")
+    return jsonify(reply="succeed", messages=[{
+            'sender_id': user.id,
+            'sender': user.username,
+            'timestamp': m.timestamp,
+            'content': m.content
+        }])
 
 

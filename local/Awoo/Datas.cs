@@ -52,6 +52,51 @@ namespace Awoo
         public string reply { get; set;}
     }
 
+    public class FormUserFetchFriends
+    {
+        public string username { get; set;}
+        public string token { get; set;}
+        public FormUserFetchFriends(string un, string tk) { username = un; token = tk; }
+    }
+    public class ReplyUserFetchFriends
+    {
+        public string reply { get; set; }
+        public List<string>friends {get;set;}
+    }
+
+    public class FormMsgFetch
+    {
+        public string username { get; set;}
+        public string fusername { get; set;}
+        public string token { get; set;}
+        public FormMsgFetch(string un, string tk, string fun) { username = un; token = tk; fusername = fun; }
+    }
+    public class ReplyMsgFetchUnit
+    {
+        public string sender_id { get; set; }
+        public string sender { get; set; }
+        public string timestamp { get; set; }
+        public string content { get; set; }
+    }
+    public class ReplyMsgFetch
+    {
+        public string reply { get; set; }
+        public List<ReplyMsgFetchUnit> messages{get;set;}
+    }
+
+    public class FormMsgSend
+    {
+        public string username { get; set;}
+        public string token { get; set;}
+        public string receiver { get; set;}
+        public string message { get; set;}
+        public FormMsgSend(string un, string tk, string recv, string msg) { username = un; token = tk; receiver = recv; message = msg; }
+    }
+    public class Reply
+    {
+        public string reply { get; set; }
+    }
+
 
 
 

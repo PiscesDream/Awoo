@@ -28,6 +28,21 @@ def user_fetch_by_username():
 
     return jsonify(reply="succeed", **user.jsonify())
 
+@api.route('/user/fetch/friends', methods=["POST"])
+def user_fetch_friends():
+    data = request.get_json()
+    username = data.get('username', '')
+    token = data.get('token', '')
+    
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return jsonify(reply="invalid username")
+    if user.token == '':
+        return jsonify(reply="user haven't logged in yet")
+    if user.token != token:
+        return jsonify(reply="incorrect token")
 
+    friends = map(lambda x: x.username, user.friends)
+    return jsonify(reply="succeed", friends=friends)
 
 
