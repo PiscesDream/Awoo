@@ -11,6 +11,8 @@ def fakedata(db):
     db.create_all()
 
     u1 = User(username='admin', password='123456')
+
+    u1 = User(username='admin', password='123456')
     u2 = User(username='test', password='123456')
     u3 = User(username='user3', password='123456')
     u4 = User(username='user4', password='123456')
