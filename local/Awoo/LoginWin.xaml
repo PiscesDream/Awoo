@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Awoo"
         mc:Ignorable="d"
-        Title="LoginWin" Height="306.728" Width="354.695" WindowStyle="None" ResizeMode="NoResize" Background="{x:Null}" AllowsTransparency="True">
+        Title="LoginWin" Height="357.728" Width="330.695" WindowStyle="None" ResizeMode="NoResize" Background="{x:Null}" AllowsTransparency="True">
     <Border BorderBrush="#FF000000" BorderThickness="1,1,1,1" CornerRadius="6,6,6,6">
         <Border.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -50,6 +50,8 @@
             </Border>
 
             <Image x:Name="image" Source="res/Awoo.jpg" Margin="105,36,103,138"/>
+            <Label x:Name="label1_Copy1" Content="Host:" HorizontalAlignment="Left" Margin="10,0,0,127" Height="33" VerticalAlignment="Bottom" Width="102" FontSize="14.667"/>
+            <TextBox x:Name="hostinput" Margin="105,0,18,132" TextWrapping="Wrap" Height="23" VerticalAlignment="Bottom" VerticalContentAlignment="Center" FontSize="14.667"/>
 
 
         </Grid>
