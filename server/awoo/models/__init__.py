@@ -47,4 +47,8 @@ def fakedata(db):
         msg5, msg6, msg7, msg8])
     db.session.commit()
 
+    u1 = User(username='HZL', password='lalala')
+    db.session.add(u1)
+    db.session.commit()
+
     print 'done.'
