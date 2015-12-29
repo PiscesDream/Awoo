@@ -40,7 +40,7 @@ def fetchmsg():
 #   print user
 #   print fuser
 #   print msgs
-    print user.username, '->', msgs
+    print user.username, '->', fuser.username, msgs
     db.session.add_all(queries)
 #    db.session.delete(queries)
     db.session.commit()
@@ -72,7 +72,8 @@ def fetchmsgall():
             'timestamp': msg.timestamp,
             'content': msg.content
         }) 
-#        msg.read = True
+    print 'all ->',msgs
+#    msg.read = True
 #    db.session.add_all(queries)
 #    db.session.delete(queries)
 #    db.session.commit()

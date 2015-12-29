@@ -17,7 +17,11 @@
         <Grid>
             <Label x:Name="label1" Content="Username:" HorizontalAlignment="Left" Margin="10,0,0,87" Height="33" VerticalAlignment="Bottom" Width="102" FontSize="14.667"/>
             <Label x:Name="label1_Copy" Content="Password:" HorizontalAlignment="Left" Margin="10,0,0,46" Width="90" Height="35" VerticalAlignment="Bottom" FontSize="14.667"/>
-            <Button x:Name="LoginBtn" Content="Login" Margin="0,0,18,10" Click="LoginBtn_Click" Height="26" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="80" FontSize="14.667" Background="#FFDDDDDD"/>
+            <Button x:Name="LoginBtn" Content="Login" 
+                    IsDefault="True"
+                    Margin="0,0,18,10" Click="LoginBtn_Click" Height="26" 
+                    VerticalAlignment="Bottom" HorizontalAlignment="Right" 
+                    Width="80" FontSize="14.667" Background="#FFDDDDDD"/>
             <TextBox x:Name="UnInput" Margin="105,0,18,92" TextWrapping="Wrap" Height="23" VerticalAlignment="Bottom" VerticalContentAlignment="Center" FontSize="14.667" Text="test"/>
             <PasswordBox x:Name="PwdInput" Margin="105,0,18,54"  Height="23" VerticalAlignment="Bottom" VerticalContentAlignment="Center" FontSize="14.667" Password="123456"/>
 

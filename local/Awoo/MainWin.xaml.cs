@@ -20,6 +20,10 @@ namespace Awoo
     /// </summary>
     public partial class MainWin : Window
     {
+        // #FFC3D6FF
+        Color blinkcolor = new Color();
+        bool blinkbool = false;
+
         public string id;
         public string avatar;
         public string intro;
@@ -29,6 +33,7 @@ namespace Awoo
         public string lastlogin;
         public string token;
         public List<string> friends_username = new List<string>();
+        public List<Grid> friends_grid = new List<Grid>();
         public MainWin(string un, string tk)
         {
             username = un;
@@ -38,7 +43,37 @@ namespace Awoo
 
             initMain();
             initFriends();
+
+            blinkcolor = Color.FromArgb(0xFF, 0xC3, 0xD6, 0xff);
+            System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+            dispatcherTimer.Tick += blinking;
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 300);
+            dispatcherTimer.Start();
         }
+        public void blinking(object source, EventArgs e)
+        {
+            Brush brush;
+            if (blinkbool)
+                brush = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+            else
+                brush = new SolidColorBrush(blinkcolor);
+            blinkbool = !blinkbool;
+
+            ReplyMsgFetch res = 
+                Shared.sendrecvjson<FormUserFetchFriends, ReplyMsgFetch>
+                (Shared.HOST, "/api/msg/fetch/all", new FormUserFetchFriends(username, token));
+            for (int i = 0; i < friends_username.Count; ++i)
+            {
+                friends_grid[i].Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                foreach (var msg in res.messages)
+                    if (msg.sender == friends_username[i])
+                    {
+                        friends_grid[i].Background = brush;
+                        break;
+                    }
+            }
+        }
+
         public void initMain()
         {
             ReplyUserFetch res = 
@@ -66,6 +101,7 @@ namespace Awoo
 
             List.Items.Clear();
             friends_username.Clear();
+            friends_grid.Clear();
             foreach (var friend in res.friends)
             {
                 /*
@@ -91,10 +127,9 @@ namespace Awoo
                 grid.Children.Add(image);
                 grid.Children.Add(label);
 
+                friends_grid.Add(grid);
                 friends_username.Add(friendres.username);
             }
-
-
         }
 
         private void move_window(object sender, MouseButtonEventArgs e)

@@ -23,6 +23,8 @@ namespace Awoo
         public string fusername;
         public string username;
         public string token;
+        System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+        bool blinking = false;
         public ChatWin(string un, string tk, string fun )
         {
             fusername = fun;
@@ -34,7 +36,6 @@ namespace Awoo
             initMain();
             fetchMsg();
 
-            System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
             dispatcherTimer.Tick += OnTimedEvent;
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
             dispatcherTimer.Start();
@@ -45,9 +46,16 @@ namespace Awoo
                 Shared.sendrecvjson<FormUserFetchByUsername, ReplyUserFetch>
                 (Shared.HOST, "/api/user/fetch/username", new FormUserFetchByUsername(fusername));
 
-            Fusername.Content = res.username;
-            Fintro.Content = res.intro;
-            Favatar.Source = Shared.Base64ToImage(res.avatar);
+            try
+            {
+                Fusername.Content = res.username;
+                Fintro.Content = res.intro;
+                Favatar.Source = Shared.Base64ToImage(res.avatar);
+            }
+            catch
+            {
+                MessageBox.Show(res.reply, "Error");
+            }
         }
 
         public void fetchMsg()
@@ -57,13 +65,19 @@ namespace Awoo
                 (Shared.HOST, "/api/msg/fetch", new FormMsgFetch(username, token, fusername));
 
 
-            foreach (var msg in res.messages)
+            try
             {
-                ListBoxItem listboxitem = new ListBoxItem();
-                listboxitem.Content = msg.timestamp + "  " + msg.sender + "\n" + msg.content;
-                Flist.Items.Add(listboxitem);
+                foreach (var msg in res.messages)
+                {
+                    ListBoxItem listboxitem = new ListBoxItem();
+                    listboxitem.Content = msg.timestamp + "  " + msg.sender + "\n" + msg.content;
+                    Flist.Items.Add(listboxitem);
+                }
             }
-
+            catch
+            {
+                MessageBox.Show(res.reply, "Error");
+            }
         }
 
         private void ExitBtn_Click(object sender, RoutedEventArgs e)
@@ -84,10 +98,18 @@ namespace Awoo
 
             if (res.reply != "succeed") { MessageBox.Show(res.reply, "Error"); this.Close(); }
 
-            var msg = res.messages[0];
-            ListBoxItem listboxitem = new ListBoxItem();
-            listboxitem.Content = msg.timestamp + "  " + msg.sender + "\n" + msg.content;
-            Flist.Items.Add(listboxitem);
+            try
+            {
+                var msg = res.messages[0];
+                ListBoxItem listboxitem = new ListBoxItem();
+                listboxitem.Content = msg.timestamp + "  " + msg.sender + "\n" + msg.content;
+                Flist.Items.Add(listboxitem);
+                Fmessage.Text = "";
+            }
+            catch
+            {
+                MessageBox.Show(res.reply, "Error");
+            }
         }
 
         private void refresh_Click(object sender, RoutedEventArgs e)
@@ -100,6 +122,16 @@ namespace Awoo
             fetchMsg();
         }
 
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            dispatcherTimer.Stop();
+        }
 
+        private void Fmessage_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+                if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+                    send_Click(sender, null);
+        }
     }
 }
