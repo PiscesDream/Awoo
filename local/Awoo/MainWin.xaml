@@ -62,6 +62,10 @@
                 </Grid>
             </ListBox>
             <Label x:Name="locationtext" Content="Location" HorizontalAlignment="Left" Margin="83,603,0,0" VerticalAlignment="Top" Width="185"/>
+            <TextBox x:Name="fquery" HorizontalAlignment="Left" Height="23" Margin="0,542,0,0" TextWrapping="Wrap" Text="Input your interest usernames here" VerticalAlignment="Top" Width="218" VerticalContentAlignment="Center"/>
+            <Button x:Name="btSearch" Content="Search" HorizontalAlignment="Left" Margin="223,542,0,0" VerticalAlignment="Top" Width="55" Height="23" Click="btSearch_Click" RenderTransformOrigin="0.195,3.217"/>
+            <TextBox x:Name="fadd" Height="23" Margin="0,570,46,0" TextWrapping="Wrap" Text="Input your friend's username here" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+            <Button x:Name="btAdd" Content="Add" HorizontalAlignment="Left" Margin="237,570,0,0" VerticalAlignment="Top" Width="41" Height="23" Click="btAdd_Click" RenderTransformOrigin="0.195,3.217"/>
 
         </Grid>
     </Border>

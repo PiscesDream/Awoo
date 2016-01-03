@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
@@ -108,7 +109,53 @@ namespace Awoo
         public List<String> usernames{ get; set; }
     }
 
+    public class FormUserQuery
+    {
+        public string username { get; set;}
+        public string token { get; set;}
+        public string query { get; set;}
+        public FormUserQuery(string un, string tk, string qu) { username = un; token = tk; query = qu; }
+    }
+    public class ReplyUserAll: Reply
+    {
+        public List<String> usernames{ get; set; }
+    }
 
+
+
+
+
+
+    public static class TypeTextRaw
+    {
+        public const string header = "{$Text.Raw}";
+        public static Label parse(String s)
+        {
+            Label label = new Label();
+            label.Content = "RawText:"+s.Substring(header.Length);
+            return label;
+        }
+    }
+    public static class TypeImgBase64
+    {
+        public const string header = "{$Img.Base64}";
+        public static UIElement parse(String s)
+        {
+            try
+            {
+                Image img = new Image();
+                img.Source = Shared.Base64ToImage(s.Substring(header.Length));
+                return img;
+            }
+            catch
+            {
+                MessageBox.Show("Image Base64 parse error.");
+                Label label = new Label();
+                label.Content = "Image Base64 parse error.";
+                return label; 
+            }
+        }
+    }
 
 
 
@@ -151,6 +198,32 @@ namespace Awoo
             image.EndInit();
             return image;
         }
+
+        public static String FileToBase64(string filename)
+        {
+            string base64;
+            using (System.Drawing.Bitmap bm = new System.Drawing.Bitmap(filename))
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    bm.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    base64 = Convert.ToBase64String(ms.ToArray());
+                }
+            }
+            return base64;
+        }
+
+        public static String BitmapToBase64(System.Drawing.Bitmap bm)
+        {
+            string base64;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                bm.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+                base64 = Convert.ToBase64String(ms.ToArray());
+            }
+            return base64;
+        }
+
 
     }
 }

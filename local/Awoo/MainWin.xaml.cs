@@ -69,16 +69,24 @@ namespace Awoo
             ReplyMsgNotice res = 
                 Shared.sendrecvjson<FormMsgNotice, ReplyMsgNotice>
                 (Shared.HOST, "/api/msg/fetch/notice", new FormMsgNotice(username, token));
-            for (int i = 0; i < friends_username.Count; ++i)
+            try
             {
-                friends_grid[i].Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
-                foreach (var username in res.usernames)
-                    if (username == friends_username[i])
-                    {
-                        friends_grid[i].Background = brush;
-                        break;
-                    }
+                for (int i = 0; i < friends_username.Count; ++i)
+                {
+                    friends_grid[i].Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                    foreach (var username in res.usernames)
+                        if (username == friends_username[i])
+                        {
+                            friends_grid[i].Background = brush;
+                            break;
+                        }
+                }
             }
+            catch
+            {
+
+            }
+
         }
 
         public void initMain()
@@ -233,6 +241,41 @@ namespace Awoo
             {
                 this.Height = original_height;
                 locationtext.Content = "recover";
+            }
+        }
+
+
+        private void btSearch_Click(object sender, RoutedEventArgs e)
+        {
+             ReplyUserAll res = 
+                Shared.sendrecvjson<FormUserQuery, ReplyUserAll>
+                (Shared.HOST, "/api/user/query", new FormUserQuery(username, token, fquery.Text));
+
+            if (res.reply != "succeed")
+            { MessageBox.Show(res.reply, "Error");return; }
+            else
+            {
+                string s = "Result:\n";
+                foreach (var str in res.usernames) s += str + '\n';
+                MessageBox.Show(s, "Searched username");
+                return;
+            }
+        }
+
+        private void btAdd_Click(object sender, RoutedEventArgs e)
+        {
+             Reply res = 
+                Shared.sendrecvjson<FormUserQuery, Reply>
+                (Shared.HOST, "/api/user/makefriend", new FormUserQuery(username, token, fadd.Text));
+            if (res.reply != "succeed")
+            { MessageBox.Show(res.reply, "Error");return; }
+            else
+            {
+                MessageBox.Show(res.reply, "Success");
+                dispatcherTimer.Stop();
+                initFriends();
+                dispatcherTimer.Start();
+                return;
             }
         }
     }

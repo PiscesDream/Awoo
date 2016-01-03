@@ -100,9 +100,6 @@ def fetchmsgnotice():
     return jsonify(reply="succeed", usernames=usernames)
 
 
-
-
-
 @api.route('/msg/send', methods=["POST"])
 def sendmsg():
     data = request.get_json()

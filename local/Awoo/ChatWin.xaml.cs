@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Timers;
+using Microsoft.Win32;
 
 namespace Awoo
 {
@@ -58,27 +59,34 @@ namespace Awoo
             }
         }
 
-        public void fetchMsg()
+        private void fetchMsg()
         {
             ReplyMsgFetch res =
                 Shared.sendrecvjson<FormMsgFetch, ReplyMsgFetch>
                 (Shared.HOST, "/api/msg/fetch", new FormMsgFetch(username, token, fusername));
 
-
             try
             {
                 foreach (var msg in res.messages)
-                {
-                    ListBoxItem listboxitem = new ListBoxItem();
-                    listboxitem.Content = msg.timestamp + "  " + msg.sender + "\n" + msg.content;
-                    Flist.Items.Add(listboxitem);
-                }
+                    plotMsg(msg);
             }
             catch
             {
                 MessageBox.Show(res.reply, "Error");
             }
         }
+
+        public void sendMsg(string msg)
+        {
+            ReplyMsgFetch res =
+                Shared.sendrecvjson<FormMsgSend, ReplyMsgFetch>
+                (Shared.HOST, "/api/msg/send", new FormMsgSend(username, token, fusername, msg));
+
+            if (res.reply != "succeed") { MessageBox.Show(res.reply, "Error"); this.Close(); }
+
+            plotMsg(res.messages[0]);
+        }
+
 
         private void ExitBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -92,24 +100,41 @@ namespace Awoo
 
         private void send_Click(object sender, RoutedEventArgs e)
         {
-            ReplyMsgFetch res =
-                Shared.sendrecvjson<FormMsgSend, ReplyMsgFetch>
-                (Shared.HOST, "/api/msg/send", new FormMsgSend(username, token, fusername, Fmessage.Text));
-
-            if (res.reply != "succeed") { MessageBox.Show(res.reply, "Error"); this.Close(); }
-
-            try
+            if (!Fmessage.Text.StartsWith("{$"))
+                Fmessage.Text = TypeTextRaw.header + Fmessage.Text;
+            sendMsg(Fmessage.Text);
+            Fmessage.Text = "";
+        }
+        private void plotMsg(ReplyMsgFetchUnit msg)
+        {
+            Grid grid = new Grid();
+            //do this for each row
+            for (int _ = 0; _ < 2; ++_)
             {
-                var msg = res.messages[0];
-                ListBoxItem listboxitem = new ListBoxItem();
-                listboxitem.Content = msg.timestamp + "  " + msg.sender + "\n" + msg.content;
-                Flist.Items.Add(listboxitem);
-                Fmessage.Text = "";
+                RowDefinition rowdef = new RowDefinition();
+                rowdef.Height = GridLength.Auto;
+                grid.RowDefinitions.Add(rowdef);
             }
-            catch
+
+            Label title = new Label();
+            title.Content = msg.timestamp + "  " + msg.sender;
+            grid.Children.Add(title);
+            Grid.SetRow(title, 0);
+
+            UIElement obj = null;
+            if (msg.content.StartsWith(TypeImgBase64.header))
+                obj = TypeImgBase64.parse(msg.content);
+            else if (msg.content.StartsWith(TypeTextRaw.header))
+                obj = TypeTextRaw.parse(msg.content);
+
+            if (!object.ReferenceEquals(obj, null))
             {
-                MessageBox.Show(res.reply, "Error");
+                grid.Children.Add(obj);
+                Grid.SetRow(obj, 1);
             }
+
+            Flist.Items.Add(grid);
+            Flist.ScrollIntoView(grid);
         }
 
         private void refresh_Click(object sender, RoutedEventArgs e)
@@ -132,6 +157,28 @@ namespace Awoo
             if (e.Key == Key.Enter)
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
                     send_Click(sender, null);
+        }
+
+        private void picbutton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog op = new OpenFileDialog();
+            op.Title = "Select a picture";
+            op.Filter = "All supported graphics|*.jpg;*.jpeg;*.png|" +
+              "JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|" +
+              "Portable Network Graphic (*.png)|*.png";
+            String base64 = TypeImgBase64.header;
+            if (op.ShowDialog() == true)
+            {
+                base64 += Shared.FileToBase64(op.FileName);
+                sendMsg(base64);
+            }
+        }
+
+        private void drawbutton_Click(object sender, RoutedEventArgs e)
+        {
+            DrawWin drawwin = new DrawWin(this);
+            drawwin.Show();
+            this.IsEnabled = false;
         }
     }
 }
