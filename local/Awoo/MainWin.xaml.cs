@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.IO;
+using System.Windows.Interop;
+using System.Runtime.InteropServices;
 
 namespace Awoo
 {
@@ -34,6 +36,8 @@ namespace Awoo
         public string token;
         public List<string> friends_username = new List<string>();
         public List<Grid> friends_grid = new List<Grid>();
+        System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+
         public MainWin(string un, string tk)
         {
             username = un;
@@ -44,8 +48,11 @@ namespace Awoo
             initMain();
             initFriends();
 
+            this.Topmost = true;
+
             blinkcolor = Color.FromArgb(0xFF, 0xC3, 0xD6, 0xff);
-            System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+
+            
             dispatcherTimer.Tick += blinking;
             dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 300);
             dispatcherTimer.Start();
@@ -59,14 +66,14 @@ namespace Awoo
                 brush = new SolidColorBrush(blinkcolor);
             blinkbool = !blinkbool;
 
-            ReplyMsgFetch res = 
-                Shared.sendrecvjson<FormUserFetchFriends, ReplyMsgFetch>
-                (Shared.HOST, "/api/msg/fetch/all", new FormUserFetchFriends(username, token));
+            ReplyMsgNotice res = 
+                Shared.sendrecvjson<FormMsgNotice, ReplyMsgNotice>
+                (Shared.HOST, "/api/msg/fetch/notice", new FormMsgNotice(username, token));
             for (int i = 0; i < friends_username.Count; ++i)
             {
                 friends_grid[i].Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
-                foreach (var msg in res.messages)
-                    if (msg.sender == friends_username[i])
+                foreach (var username in res.usernames)
+                    if (username == friends_username[i])
                     {
                         friends_grid[i].Background = brush;
                         break;
@@ -115,8 +122,9 @@ namespace Awoo
                     Shared.sendrecvjson<FormUserFetchByUsername, ReplyUserFetch>
                     (Shared.HOST, "/api/user/fetch/username", new FormUserFetchByUsername(friend));
 
+                Border border = new Border();
+                border.BorderBrush = Brushes.Gray; border.BorderThickness = new Thickness(0, 0, 1, 1);
                 Grid grid = new Grid();
-                List.Items.Add(grid);
                 grid.Height = 57; grid.Width = this.Width-10;
                 Image image = new Image();
                 image.Source = Shared.Base64ToImage(friendres.avatar);
@@ -126,6 +134,8 @@ namespace Awoo
                 label.Margin = new Thickness(55,0,10,30); label.HorizontalAlignment = HorizontalAlignment.Left;label.FontSize = 13;
                 grid.Children.Add(image);
                 grid.Children.Add(label);
+                border.Child = grid;
+                List.Items.Add(border);
 
                 friends_grid.Add(grid);
                 friends_username.Add(friendres.username);
@@ -148,6 +158,82 @@ namespace Awoo
             //MessageBox.Show(List.SelectedIndex.ToString());
             ChatWin chatwin = new ChatWin(username, token, friends_username[List.SelectedIndex]);
             chatwin.Show();            
+        }
+
+        private void Window_StateChanged(object sender, EventArgs e)
+        {
+            if (this.WindowState == WindowState.Maximized)
+                this.WindowState = WindowState.Normal;
+        }
+
+        private void Window_LocationChanged(object sender, EventArgs e)
+        {
+            locationtext.Content = "Location: (" + this.Left.ToString() + ", " + this.Top.ToString() + ")";
+            if (this.Top <= 5) this.Top = 5;
+        }
+
+        private void Window_LostFocus(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void Window_GotFocus(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        /*
+                public struct WINDOWPOS
+                {
+                    public IntPtr hwnd;
+                    public IntPtr hwndInsertAfter;
+                    public int x;
+                    public int y;
+                    public int cx;
+                    public int cy;
+                    public UInt32 flags;
+                };
+
+                private static IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+                {
+                    switch (msg)
+                    {
+                        case 0x46://WM_WINDOWPOSCHANGING
+                            if (Mouse.LeftButton != MouseButtonState.Pressed)
+                            {
+                                WINDOWPOS wp = (WINDOWPOS)Marshal.PtrToStructure(lParam, typeof(WINDOWPOS));
+                                wp.flags = wp.flags | 2; //SWP_NOMOVE
+                                Marshal.StructureToPtr(wp, lParam, false);
+                            }
+                            break;
+                    }
+                    return IntPtr.Zero;
+                }
+
+                private void Window_Loaded(object sender, RoutedEventArgs e)
+                {
+                    HwndSource source = HwndSource.FromHwnd(new WindowInteropHelper(this).Handle);
+                    source.AddHook(new HwndSourceHook(WndProc));
+                }
+         */
+
+        public double original_height = 0.0;
+        private void Window_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (this.Top <= 10)
+            {
+                original_height = this.Height;
+                this.Height = 15;
+                locationtext.Content = "hidden";
+            }
+        }
+
+        private void Window_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if (this.Top <= 10)
+            {
+                this.Height = original_height;
+                locationtext.Content = "recover";
+            }
         }
     }
 }

@@ -97,6 +97,17 @@ namespace Awoo
         public string reply { get; set; }
     }
 
+    public class FormMsgNotice
+    {
+        public string username { get; set;}
+        public string token { get; set;}
+        public FormMsgNotice(string un, string tk) { username = un; token = tk; }
+    }
+    public class ReplyMsgNotice: Reply
+    {
+        public List<String> usernames{ get; set; }
+    }
+
 
 
 
@@ -118,7 +129,8 @@ namespace Awoo
                 WM_NCLBUTTONDOWN, HT_CAPTION, 0);
         }
 
-        public static string HOST = "http://localhost:5000/";
+        //public static string HOST = "http://localhost:5000/";
+        public static string HOST = "http://awoo.hapd.info";
         public static T2 sendrecvjson<T1, T2>(string host, string url, T1 obj) where T2 : new() { 
             var client = new RestClient(host);
             var request = new RestRequest(url, Method.POST);

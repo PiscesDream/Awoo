@@ -7,18 +7,15 @@
         mc:Ignorable="d"
         Title="ChatWin" Height="470" Width="446" WindowStyle="None" Background="{x:Null}" AllowsTransparency="True" Closing="Window_Closing">
 
-    <Border BorderBrush="#FF000000" BorderThickness="1,1,1,1" CornerRadius="6,6,6,6" Background="White">
+    <Border BorderBrush="White" BorderThickness="1,1,1,1" CornerRadius="6,6,6,6">
+        <Border.Background>
+            <ImageBrush ImageSource="res/bkg.jpg" Stretch="UniformToFill"/>
+        </Border.Background>
         <Grid>
-            <Border MouseDown="move_window" BorderThickness="1,1,1,1" CornerRadius="6,6,6,6" Height="79" VerticalAlignment="Top">
-                <Border.BorderBrush>
-                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="#FF979797" Offset="0"/>
-                        <GradientStop Color="White" Offset="1"/>
-                    </LinearGradientBrush>
-                </Border.BorderBrush>
+            <Border MouseDown="move_window" BorderThickness="1,1,1,1" CornerRadius="6,6,0,0" Height="79" VerticalAlignment="Top">
 
                 <Border.Background>
-                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0" Opacity="0.3">
                         <GradientStop Color="#FF979797" Offset="0"/>
                         <GradientStop Color="White" Offset="1"/>
                     </LinearGradientBrush>
@@ -30,13 +27,13 @@
             </Border>
 
             <Image x:Name="Favatar" Width="39" Margin="10,10,0,0" HorizontalAlignment="Left" Height="39" VerticalAlignment="Top"/>
-            <Label x:Name="Fusername" MouseDown="move_window" Content="Label" Margin="54,3,29,0" VerticalAlignment="Top" FontSize="16" />
-            <Label x:Name="Fintro" MouseDown="move_window" Content="Label" Margin="54,24,10,0" VerticalAlignment="Top"/>
+            <Label x:Name="Fusername" MouseDown="move_window" Content="Label" Margin="54,3,29,0" VerticalAlignment="Top" FontSize="16" Foreground="White" />
+            <Label x:Name="Fintro" MouseDown="move_window" Content="Label" Margin="54,24,10,0" VerticalAlignment="Top" Foreground="White"/>
 
 
             <Border BorderThickness="1,1,1,1" CornerRadius="0,0,6,6" Height="120" VerticalAlignment="Bottom">
                 <Border.Background>
-                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0" Opacity="0.4">
                         <GradientStop Color="#FF8D8D8D" Offset="1"/>
                         <GradientStop Color="White"/>
                     </LinearGradientBrush>
@@ -45,11 +42,14 @@
                     <Button x:Name="send" Content="Send" Margin="0,0,6,6" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="75" Click="send_Click"/>
                     <Button x:Name="button1" IsCancel="False" Click="ExitBtn_Click" Content="Close" Margin="0,0,86,6" Height="19" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="75"/>
                     <Button x:Name="refresh" Content="Refresh" Margin="0,0,166,6" Height="19" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="75" Click="refresh_Click"/>
-                    <TextBox x:Name="Fmessage" Margin="0,10,0,30" TextWrapping="Wrap" Text="Please input here" KeyDown="Fmessage_KeyDown" AcceptsReturn="True"/>
+                    <TextBox x:Name="Fmessage" Margin="0,0,0,30" TextWrapping="Wrap" Text="Please input here" KeyDown="Fmessage_KeyDown" AcceptsReturn="True"/>
                 </Grid>
             </Border>
 
             <ListBox x:Name="Flist" Margin="0,79,0,120">
+                <ListBox.Background>
+                    <SolidColorBrush Color="White"/>
+                </ListBox.Background>
                 <ListBoxItem Content="Messages Comes Here"/>
             </ListBox>
 

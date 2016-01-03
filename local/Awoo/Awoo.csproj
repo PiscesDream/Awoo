@@ -119,6 +119,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="res\Awoo.jpg" />
+    <Resource Include="res\bkg.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="res\bkg2.jpg" />
+    <Resource Include="res\bkg3.jpg" />
+    <Resource Include="res\bkg4.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

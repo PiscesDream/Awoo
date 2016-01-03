@@ -79,6 +79,30 @@ def fetchmsgall():
 #    db.session.commit()
     return jsonify(reply="succeed", messages=msgs)
 
+@api.route('/msg/fetch/notice', methods=["POST"])
+def fetchmsgnotice():
+    data = request.get_json()
+    username = data.get('username', '')
+    token = data.get('token', '')
+    
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return jsonify(reply="invalid username")
+    if user.token == '':
+        return jsonify(reply="user haven't logged in yet")
+    if user.token != token:
+        return jsonify(reply="incorrect token")
+
+    queries = Message.query.filter_by(recver_id=user.id, read=False).all()
+    usernames = map(lambda x: User.query.get(x.sender_id).username, queries)
+    usernames = list(set(usernames))
+    print username, '[fetch notice]', usernames
+    return jsonify(reply="succeed", usernames=usernames)
+
+
+
+
+
 @api.route('/msg/send', methods=["POST"])
 def sendmsg():
     data = request.get_json()
