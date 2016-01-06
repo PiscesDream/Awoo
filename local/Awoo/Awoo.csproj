@@ -63,6 +63,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="RegWin.xaml.cs">
+      <DependentUpon>RegWin.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SettingWin.xaml.cs">
+      <DependentUpon>SettingWin.xaml</DependentUpon>
+    </Compile>
     <Page Include="ChatWin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -82,7 +88,7 @@
     <Compile Include="ChatWin.xaml.cs">
       <DependentUpon>ChatWin.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Datas.cs" />
+    <Compile Include="Common.cs" />
     <Compile Include="DrawWin.xaml.cs">
       <DependentUpon>DrawWin.xaml</DependentUpon>
     </Compile>
@@ -90,6 +96,14 @@
       <DependentUpon>LoginWin.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RegWin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SettingWin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

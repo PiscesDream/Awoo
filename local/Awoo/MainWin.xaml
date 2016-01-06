@@ -6,6 +6,13 @@
         xmlns:local="clr-namespace:Awoo"
         mc:Ignorable="d"
         Title="MainWin" Height="629.729" Width="279.715" ResizeMode="CanResizeWithGrip" AllowsTransparency="True" WindowStyle="None" Background="{x:Null}" StateChanged="Window_StateChanged" LocationChanged="Window_LocationChanged" LostFocus="Window_LostFocus" GotFocus="Window_GotFocus" MouseLeave="Window_MouseLeave" MouseEnter="Window_MouseEnter">
+    <Window.Resources>
+        <ContextMenu x:Key="friendPopup">
+            <MenuItem Header="Send message to ..." Click="sendmessage" />
+            <Separator />
+            <MenuItem Header="Delete friend" Click="deleteFriend"/>
+        </ContextMenu>
+    </Window.Resources>
 
     <Border BorderBrush="White" BorderThickness="1,1,1,1" CornerRadius="6,6,6,6">
         <Border.Background>
@@ -28,7 +35,7 @@
 
                 <Button x:Name="ExitBtn" Content="x" HorizontalAlignment="Right" Margin="0,0,6,-2" VerticalAlignment="Top" 
                         Width="20" Height="20" 
-                        Background="{x:Null}" Click="ExitBtn_Click" FontSize="9.333" BorderBrush="{x:Null}"/>
+                        Background="{x:Null}" Click="ExitBtn_Click" FontSize="9.333" BorderBrush="{x:Null}" Foreground="White"/>
             </Border>
 
             <Border Height="70" Width="70" MouseDown="move_window" 
@@ -61,11 +68,11 @@
                     <Label Margin="55,0,10,30" Content="asdf" FontSize="13"/>
                 </Grid>
             </ListBox>
-            <Label x:Name="locationtext" Content="Location" HorizontalAlignment="Left" Margin="83,603,0,0" VerticalAlignment="Top" Width="185"/>
-            <TextBox x:Name="fquery" HorizontalAlignment="Left" Height="23" Margin="0,542,0,0" TextWrapping="Wrap" Text="Input your interest usernames here" VerticalAlignment="Top" Width="218" VerticalContentAlignment="Center"/>
-            <Button x:Name="btSearch" Content="Search" HorizontalAlignment="Left" Margin="223,542,0,0" VerticalAlignment="Top" Width="55" Height="23" Click="btSearch_Click" RenderTransformOrigin="0.195,3.217"/>
-            <TextBox x:Name="fadd" Height="23" Margin="0,570,46,0" TextWrapping="Wrap" Text="Input your friend's username here" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
-            <Button x:Name="btAdd" Content="Add" HorizontalAlignment="Left" Margin="237,570,0,0" VerticalAlignment="Top" Width="41" Height="23" Click="btAdd_Click" RenderTransformOrigin="0.195,3.217"/>
+            <TextBox x:Name="fquery" Margin="0,0,60,63" TextWrapping="Wrap" Text="Input your interest usernames here" VerticalContentAlignment="Center" Height="23" VerticalAlignment="Bottom"/>
+            <Button x:Name="btSearch" Content="Search" Margin="0,0,0,63" Click="btSearch_Click" RenderTransformOrigin="0.195,3.217" HorizontalAlignment="Right" Width="55" Height="23" VerticalAlignment="Bottom"/>
+            <TextBox x:Name="fadd" Margin="0,0,46,35" TextWrapping="Wrap" Text="Input your friend's username here" VerticalContentAlignment="Center" Height="23" VerticalAlignment="Bottom"/>
+            <Button x:Name="btAdd" Content="Add" Margin="0,0,0,35" Click="btAdd_Click" RenderTransformOrigin="0.195,3.217" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="41"/>
+            <Button x:Name="button" Content="Settings" HorizontalAlignment="Left" Margin="10,599,0,0" VerticalAlignment="Top" Width="75" Click="button_Click"/>
 
         </Grid>
     </Border>

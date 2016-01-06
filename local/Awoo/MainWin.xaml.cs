@@ -52,7 +52,11 @@ namespace Awoo
 
             blinkcolor = Color.FromArgb(0xFF, 0xC3, 0xD6, 0xff);
 
-            
+
+            Shared.configpath = @"./" + username + ".xml";
+            try { Shared.config = Config.load(); } catch { Shared.config = null; }
+
+
             dispatcherTimer.Tick += blinking;
             dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 300);
             dispatcherTimer.Start();
@@ -144,10 +148,19 @@ namespace Awoo
                 grid.Children.Add(label);
                 border.Child = grid;
                 List.Items.Add(border);
+                grid.MouseRightButtonUp += (MouseButtonEventHandler)popup;
 
                 friends_grid.Add(grid);
                 friends_username.Add(friendres.username);
             }
+        }
+
+
+        private void popup(object sender, MouseButtonEventArgs e)
+        {
+            ContextMenu cm = this.FindResource("friendPopup") as ContextMenu;
+            cm.PlacementTarget = sender as Button;
+            cm.IsOpen = true;
         }
 
         private void move_window(object sender, MouseButtonEventArgs e)
@@ -176,7 +189,7 @@ namespace Awoo
 
         private void Window_LocationChanged(object sender, EventArgs e)
         {
-            locationtext.Content = "Location: (" + this.Left.ToString() + ", " + this.Top.ToString() + ")";
+            //locationtext.Content = "Location: (" + this.Left.ToString() + ", " + this.Top.ToString() + ")";
             if (this.Top <= 5) this.Top = 5;
         }
 
@@ -231,7 +244,7 @@ namespace Awoo
             {
                 original_height = this.Height;
                 this.Height = 15;
-                locationtext.Content = "hidden";
+                //locationtext.Content = "hidden";
             }
         }
 
@@ -240,7 +253,7 @@ namespace Awoo
             if (this.Top <= 10)
             {
                 this.Height = original_height;
-                locationtext.Content = "recover";
+                //locationtext.Content = "recover";
             }
         }
 
@@ -278,5 +291,40 @@ namespace Awoo
                 return;
             }
         }
+
+        private void sendmessage(object sender, RoutedEventArgs e)
+        {
+            ChatWin chatwin = new ChatWin(username, token, friends_username[List.SelectedIndex]);
+            chatwin.Show();            
+        }
+
+        private void deleteFriend(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("Delete friend [" + friends_username[List.SelectedIndex] + "] ?", 
+                "Warning", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No)
+                == MessageBoxResult.No)
+                return;
+
+             Reply res = 
+                Shared.sendrecvjson<FormUserQuery, Reply>
+                (Shared.HOST, "/api/user/deletefriend", new FormUserQuery(username, token, friends_username[List.SelectedIndex]));
+            if (res.reply != "succeed")
+            { MessageBox.Show(res.reply, "Error");return; }
+            else
+            {
+                MessageBox.Show(res.reply, "Success");
+                dispatcherTimer.Stop();
+                initFriends();
+                dispatcherTimer.Start();
+                return;
+            }
+        }
+
+        public SettingWin settingwin = new SettingWin();
+        private void button_Click(object sender, RoutedEventArgs e)
+        {
+            settingwin.Show();
+        }
+
     }
 }

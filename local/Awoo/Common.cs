@@ -12,6 +12,7 @@ using RestSharp;
 using System.IO;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using System.Windows.Media;
 
 namespace Awoo
 {
@@ -120,12 +121,28 @@ namespace Awoo
     {
         public List<String> usernames{ get; set; }
     }
+    public class FormRegister
+    {
+        public string username { get; set;}
+        public string password { get; set;}
+        public string email { get; set;}
+        public FormRegister(string em, string un, string psw) { email = em; username = un; password = psw; }
+    }
 
 
 
-
-
-
+    public static class TypeText
+    {
+        public const string header = "";
+        public static Label parse(String s)
+        {
+            Label label = new Label();
+            label.Content = s; 
+            label.Content = "RawText:"+s.Substring(header.Length);
+            Shared.renderLabel(label);
+            return label;
+        }
+    }
     public static class TypeTextRaw
     {
         public const string header = "{$Text.Raw}";
@@ -133,6 +150,7 @@ namespace Awoo
         {
             Label label = new Label();
             label.Content = "RawText:"+s.Substring(header.Length);
+            Shared.renderLabel(label);
             return label;
         }
     }
@@ -152,6 +170,7 @@ namespace Awoo
                 MessageBox.Show("Image Base64 parse error.");
                 Label label = new Label();
                 label.Content = "Image Base64 parse error.";
+                Shared.renderLabel(label);
                 return label; 
             }
         }
@@ -159,7 +178,22 @@ namespace Awoo
 
 
 
-    public static class Shared { 
+    public static class Shared {
+        public static Config config;
+        public static string configpath;
+        public static void renderLabel(Label label)
+        {
+            if (!object.ReferenceEquals(Shared.config, null))
+            {
+                label.Foreground = new SolidColorBrush(Shared.config.chatwinfontcolor);
+                label.FontSize = Shared.config.chatwinfontsize;
+                FontFamilyConverter ffc = new FontFamilyConverter();
+                label.FontFamily = (FontFamily)ffc.ConvertFromString(Shared.config.chatwinfontfamily);
+            }
+        }
+
+
+
         // move window
         public const int WM_NCLBUTTONDOWN = 0xA1;
         public const int HT_CAPTION = 0x2;
@@ -176,8 +210,8 @@ namespace Awoo
                 WM_NCLBUTTONDOWN, HT_CAPTION, 0);
         }
 
-        //public static string HOST = "http://localhost:5000/";
-        public static string HOST = "http://awoo.hapd.info";
+        public static string HOST = "http://localhost:5000/";
+        //public static string HOST = "http://awoo.hapd.info";
         public static T2 sendrecvjson<T1, T2>(string host, string url, T1 obj) where T2 : new() { 
             var client = new RestClient(host);
             var request = new RestRequest(url, Method.POST);
@@ -223,7 +257,35 @@ namespace Awoo
             }
             return base64;
         }
-
-
     }
+
+
+
+
+    public class Config
+    {
+        public Color chatwinfontcolor;
+        public float chatwinfontsize;
+        public string chatwinfontfamily;
+
+        static public void save(Config config)
+        {
+            var writer = new System.Xml.Serialization.XmlSerializer(typeof(Config));
+            var wfile = new System.IO.StreamWriter(Shared.configpath);
+            writer.Serialize(wfile, config);
+            wfile.Close();
+        }
+        static public Config load()
+        {
+            System.Xml.Serialization.XmlSerializer reader =
+                new System.Xml.Serialization.XmlSerializer(typeof(Config));
+            System.IO.StreamReader file = new System.IO.StreamReader(Shared.configpath);
+            Config config = (Config)reader.Deserialize(file);
+            file.Close();
+            return config;
+        }
+    }
+
+
+
 }

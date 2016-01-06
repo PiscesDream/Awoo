@@ -40,3 +40,19 @@ def login():
     db.session.add(user)
     db.session.commit()
     return jsonify(reply="logged in", token=user.token)
+
+@api.route('/register', methods=["POST"])
+def register():
+    data = request.get_json()
+    username = data.get('username', '')
+    password = data.get('password', '')
+    email = data.get('email', '')
+    
+    user = User.query.filter_by(username=username).first()
+    if user:
+        return jsonify(reply="username occupied")
+    u = User(username = username,
+             password = password,
+             email = email)
+    db.session.add(u)
+    return jsonify(reply="succeed")

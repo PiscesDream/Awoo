@@ -29,7 +29,8 @@ namespace Awoo
 
         private void ExitBtn_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Application.Current.Shutdown();
+            //this.Close();
         }
 
         public void move_window(object sender, MouseButtonEventArgs e)
@@ -61,9 +62,11 @@ namespace Awoo
             } 
         }
 
+        RegWin regwin = new RegWin();
         private void RegisterBtn_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("http://Awoo.hapd.info");
+            //System.Diagnostics.Process.Start("http://Awoo.hapd.info");
+            regwin.Show();
         }
     }
 }

@@ -126,6 +126,8 @@ namespace Awoo
                 obj = TypeImgBase64.parse(msg.content);
             else if (msg.content.StartsWith(TypeTextRaw.header))
                 obj = TypeTextRaw.parse(msg.content);
+            else
+                obj = TypeText.parse(msg.content);
 
             if (!object.ReferenceEquals(obj, null))
             {
