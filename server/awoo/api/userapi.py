@@ -94,3 +94,30 @@ def userdeletefriend():
     return jsonify(reply="succeed")
 
 
+@api.route('/user/update', methods=["POST"])
+def userupdate():
+    data = request.get_json()
+    username = data.get('username', '')
+    token = data.get('token', '')
+
+    intro = data.get('intro', '')
+    password = data.get('password', '')
+    avatar = data.get('avatar', '')
+    
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return jsonify(reply="invalid username")
+    if user.token == '':
+        return jsonify(reply="user haven't logged in yet")
+    if user.token != token:
+        return jsonify(reply="incorrect token")
+
+
+    user.intro = intro
+    if password: user.password = password
+    if avatar: user.avatar = avatar
+    db.session.add(user)
+
+    return jsonify(reply="succeed")
+
+

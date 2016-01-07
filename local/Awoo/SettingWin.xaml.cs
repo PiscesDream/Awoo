@@ -19,8 +19,13 @@ namespace Awoo
     /// </summary>
     public partial class SettingWin : Window
     {
-        public SettingWin()
+        public string username;
+        public string token;
+        public string avatar;
+        public MainWin parent;
+        public SettingWin(MainWin mainwin)
         {
+            parent = mainwin;
             InitializeComponent();
         }
 
@@ -51,6 +56,39 @@ namespace Awoo
         private void move_window(object sender, MouseButtonEventArgs e)
         {
             Shared.move_window(this);
+        }
+
+        private void SubmitBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (password.Password != retype.Password)
+            {
+                MessageBox.Show("Please input the same password", "Error");
+                return;
+            }
+
+
+            Reply res =
+              Shared.sendrecvjson<FormUpdate, Reply>
+              (Shared.HOST, "/api/user/update", new FormUpdate(
+                  username, token, introduce.Text, password.Password, avatar)); 
+            MessageBox.Show(res.reply);
+            if (res.reply == "succeed")
+            {
+                this.Hide();
+                parent.initMain();
+            }
+        }
+
+        private void ChangeBtn_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.OpenFileDialog op = new System.Windows.Forms.OpenFileDialog();
+            op.Title = "Select a picture";
+            op.Filter = "All supported graphics|*.jpg;*.jpeg;*.png|" +
+              "JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|" +
+              "Portable Network Graphic (*.png)|*.png";
+            if (op.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                avatar = Shared.FileToBase64(op.FileName, true);
+            this.Avatar.Source = Shared.Base64ToImage(avatar);
         }
     }
 }

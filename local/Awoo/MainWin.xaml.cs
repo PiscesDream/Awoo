@@ -48,7 +48,7 @@ namespace Awoo
             initMain();
             initFriends();
 
-            this.Topmost = true;
+            // this.Topmost = true;
 
             blinkcolor = Color.FromArgb(0xFF, 0xC3, 0xD6, 0xff);
 
@@ -60,6 +60,8 @@ namespace Awoo
             dispatcherTimer.Tick += blinking;
             dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 300);
             dispatcherTimer.Start();
+
+            settingwin = new SettingWin(this);
         }
         public void blinking(object source, EventArgs e)
         {
@@ -320,9 +322,18 @@ namespace Awoo
             }
         }
 
-        public SettingWin settingwin = new SettingWin();
+        public SettingWin settingwin;
         private void button_Click(object sender, RoutedEventArgs e)
         {
+            settingwin.introduce.Text = intro;
+            settingwin.Avatar.Source = Shared.Base64ToImage(avatar);
+            settingwin.password.Password = "";
+            settingwin.retype.Password = "";
+
+            settingwin.avatar = "";
+            settingwin.username = username;
+            settingwin.token = token;
+
             settingwin.Show();
         }
 

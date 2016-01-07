@@ -128,6 +128,20 @@ namespace Awoo
         public string email { get; set;}
         public FormRegister(string em, string un, string psw) { email = em; username = un; password = psw; }
     }
+    public class FormUpdate
+    {
+        public string username { get; set;}
+        public string token { get; set;}
+        public string intro { get; set;}
+        public string password { get; set;}
+        public string avatar { get; set;}
+        public FormUpdate(string un, string tk, string into, string pwd, string av) { username = un; token = tk; intro = into; password = pwd; avatar = av; }
+    }
+
+
+
+
+
 
 
 
@@ -232,11 +246,19 @@ namespace Awoo
             image.EndInit();
             return image;
         }
+        private static System.Drawing.Bitmap ResizeBitmap(System.Drawing.Bitmap sourceBMP, int width, int height)
+        {
+            System.Drawing.Bitmap result = new System.Drawing.Bitmap(width, height);
+            using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(result))
+                g.DrawImage(sourceBMP, 0, 0, width, height);
+            return result;
+        }
 
-        public static String FileToBase64(string filename)
+        public static String FileToBase64(string filename, bool resize=false)
         {
             string base64;
-            using (System.Drawing.Bitmap bm = new System.Drawing.Bitmap(filename))
+            System.Drawing.Bitmap bm = new System.Drawing.Bitmap(filename);
+            if (resize) bm = ResizeBitmap(bm, 64, 64);
             {
                 using (MemoryStream ms = new MemoryStream())
                 {
