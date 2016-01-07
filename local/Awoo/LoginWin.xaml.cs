@@ -24,7 +24,19 @@ namespace Awoo
         public LoginWin()
         {
             InitializeComponent();
-            hostinput.Text = Shared.HOST;
+
+            try
+            {
+                Shared.globalconfig= GlobalConfig.load();
+                Shared.HOST = hostinput.Text = Shared.globalconfig.lastHOST;
+                this.UnInput.Text = Shared.globalconfig.lastUser;
+                this.PwdInput.Password = "";
+            }
+            catch
+            {
+                Shared.globalconfig = new GlobalConfig();
+                hostinput.Text = Shared.HOST;
+            }
         }
 
         private void ExitBtn_Click(object sender, RoutedEventArgs e)
@@ -47,6 +59,7 @@ namespace Awoo
                 res =
                     Shared.sendrecvjson<FormLogin, ReplyLogin>
                     (Shared.HOST, "/api/login", new FormLogin(UnInput.Text, PwdInput.Password));
+                MessageBox.Show(res.reply);
             }
             catch (Exception)
             {
@@ -54,8 +67,11 @@ namespace Awoo
             }
 
 
-            MessageBox.Show(res.reply);
             if (res.reply == "logged in") {
+                Shared.globalconfig.lastHOST = Shared.HOST;
+                Shared.globalconfig.lastUser = UnInput.Text;
+                GlobalConfig.save(Shared.globalconfig);
+
                 MainWin mainwin = new MainWin(UnInput.Text, res.token);
                 mainwin.Show();
                 this.Close();

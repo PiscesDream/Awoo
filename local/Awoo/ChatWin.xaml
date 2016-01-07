@@ -46,20 +46,38 @@
                     </Grid.RowDefinitions>
 
                     <Border CornerRadius="4,4,4,4" BorderBrush="White" BorderThickness="1" HorizontalAlignment="Left" Height="27" VerticalAlignment="Top" Width="27">
+                        <Border.Background>
+                            <SolidColorBrush Color="White" Opacity="0.7"/>
+                        </Border.Background>
                         <Button x:Name="picbutton" BorderBrush="{x:Null}" Foreground="{x:Null}" Click="picbutton_Click">
                             <Button.Background>
-                                <ImageBrush ImageSource="res/bkg4.png" Stretch="UniformToFill" Opacity="0.8"/>
+                                <ImageBrush ImageSource="res/Screenshot-52.png" Stretch="UniformToFill" Opacity="0.8"/>
                             </Button.Background>
                         </Button>
                     </Border>
 
                     <Border CornerRadius="4,4,4,4" BorderBrush="White" BorderThickness="1" HorizontalAlignment="Left" Height="27" VerticalAlignment="Top" Width="27" Margin="32,0,0,0">
+                        <Border.Background>
+                            <SolidColorBrush Color="White" Opacity="0.8"/>
+                        </Border.Background>
                         <Button x:Name="drawbutton" BorderBrush="{x:Null}" Foreground="{x:Null}" Click="drawbutton_Click" >
                             <Button.Background>
-                                <ImageBrush ImageSource="res/bkg3.jpg" Stretch="UniformToFill" Opacity="0.8"/>
+                                <ImageBrush ImageSource="res/Paint Brush-52.png" Stretch="UniformToFill" Opacity="0.8"/>
                             </Button.Background>
                         </Button>
                     </Border>
+
+                    <Border CornerRadius="4,4,4,4" BorderBrush="White" BorderThickness="1" HorizontalAlignment="Left" Height="27" VerticalAlignment="Top" Width="27" Margin="64,0,0,0">
+                        <Border.Background>
+                            <SolidColorBrush Color="White" Opacity="0.8"/>
+                        </Border.Background>
+                        <Button x:Name="hisbutton" BorderBrush="{x:Null}" Foreground="{x:Null}" Click="hisbutton_Click" >
+                            <Button.Background>
+                                <ImageBrush ImageSource="res/Clock-52.png" Stretch="UniformToFill" Opacity="0.8"/>
+                            </Button.Background>
+                        </Button>
+                    </Border>
+
 
 
                     <TextBox x:Name="Fmessage" Margin="0,0,0,1" TextWrapping="Wrap" Text="Please input here" KeyDown="Fmessage_KeyDown" AcceptsReturn="True" Grid.Row="1"/>
@@ -70,7 +88,7 @@
                 </Grid>
             </Border>
 
-            <ListBox x:Name="Flist" Margin="0,79,0,120">
+            <ListBox x:Name="Flist" Margin="0,79,0,120" HorizontalContentAlignment="Stretch">
                 <ListBox.Background>
                     <SolidColorBrush Color="White"/>
                 </ListBox.Background>

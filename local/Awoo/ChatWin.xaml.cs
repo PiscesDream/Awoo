@@ -72,7 +72,8 @@ namespace Awoo
             }
             catch
             {
-                MessageBox.Show(res.reply, "Error");
+                MessageBox.Show("Server is disconnected", "Error");
+                Application.Current.Shutdown();
             }
         }
 
@@ -90,7 +91,8 @@ namespace Awoo
 
         private void ExitBtn_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Application.Current.Shutdown();
+            //this.Close();
         }
 
         public void move_window(object sender, MouseButtonEventArgs e)
@@ -117,6 +119,13 @@ namespace Awoo
             }
 
             Label title = new Label();
+
+            //            Exception e = new Exception();
+            //            throw (e);
+
+            //            if (msg.sender == username)
+            if (msg.sender == username)
+                grid.HorizontalAlignment = HorizontalAlignment.Right;
             title.Content = msg.timestamp + "  " + msg.sender;
             grid.Children.Add(title);
             Grid.SetRow(title, 0);
@@ -181,6 +190,25 @@ namespace Awoo
             DrawWin drawwin = new DrawWin(this);
             drawwin.Show();
             this.IsEnabled = false;
+        }
+
+        private void hisbutton_Click(object sender, RoutedEventArgs e)
+        {
+            ReplyMsgFetch res =
+                Shared.sendrecvjson<FormMsgFetch, ReplyMsgFetch>
+                (Shared.HOST, "/api/msg/fetch/history", new FormMsgFetch(username, token, fusername));
+
+
+            try
+            {
+                Flist.Items.Clear();
+                foreach (var msg in res.messages)
+                    plotMsg(msg);
+            }
+            catch
+            {
+                MessageBox.Show(res.reply, "Error");
+            }
         }
     }
 }

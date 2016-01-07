@@ -31,7 +31,7 @@ namespace Awoo
 
         private void ExitBtn_Click(object sender, RoutedEventArgs e)
         {
-            this.Hide();
+            this.Close();
         }
 
 
@@ -74,7 +74,7 @@ namespace Awoo
             MessageBox.Show(res.reply);
             if (res.reply == "succeed")
             {
-                this.Hide();
+                this.Close();
                 parent.initMain();
             }
         }

@@ -152,7 +152,7 @@ namespace Awoo
         {
             Label label = new Label();
             label.Content = s; 
-            label.Content = "RawText:"+s.Substring(header.Length);
+            label.Content = /*"RawText:"+*/s.Substring(header.Length);
             Shared.renderLabel(label);
             return label;
         }
@@ -163,7 +163,7 @@ namespace Awoo
         public static Label parse(String s)
         {
             Label label = new Label();
-            label.Content = "RawText:"+s.Substring(header.Length);
+            label.Content = /*"RawText:"+*/s.Substring(header.Length);
             Shared.renderLabel(label);
             return label;
         }
@@ -195,6 +195,8 @@ namespace Awoo
     public static class Shared {
         public static Config config;
         public static string configpath;
+        public static GlobalConfig globalconfig;
+        public static string globalconfigpath = @"./global_conf.xml";
         public static void renderLabel(Label label)
         {
             if (!object.ReferenceEquals(Shared.config, null))
@@ -284,12 +286,32 @@ namespace Awoo
 
 
 
+    public class GlobalConfig
+    {
+        public string lastHOST;
+        public string lastUser;
+        static public void save(GlobalConfig config)
+        {
+            var writer = new System.Xml.Serialization.XmlSerializer(typeof(GlobalConfig));
+            var wfile = new System.IO.StreamWriter(Shared.globalconfigpath);
+            writer.Serialize(wfile, config);
+            wfile.Close();
+        }
+        static public GlobalConfig load()
+        {
+            System.Xml.Serialization.XmlSerializer reader =
+                new System.Xml.Serialization.XmlSerializer(typeof(GlobalConfig));
+            System.IO.StreamReader file = new System.IO.StreamReader(Shared.globalconfigpath);
+            GlobalConfig config = (GlobalConfig)reader.Deserialize(file);
+            file.Close();
+            return config;
+        }
+    }
     public class Config
     {
         public Color chatwinfontcolor;
         public float chatwinfontsize;
         public string chatwinfontfamily;
-
         static public void save(Config config)
         {
             var writer = new System.Xml.Serialization.XmlSerializer(typeof(Config));

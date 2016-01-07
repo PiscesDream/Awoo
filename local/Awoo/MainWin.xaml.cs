@@ -52,16 +52,12 @@ namespace Awoo
 
             blinkcolor = Color.FromArgb(0xFF, 0xC3, 0xD6, 0xff);
 
-
-            Shared.configpath = @"./" + username + ".xml";
+            Shared.configpath = @"./" + username + "_conf.xml";
             try { Shared.config = Config.load(); } catch { Shared.config = null; }
 
-
             dispatcherTimer.Tick += blinking;
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 300);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 500);
             dispatcherTimer.Start();
-
-            settingwin = new SettingWin(this);
         }
         public void blinking(object source, EventArgs e)
         {
@@ -322,9 +318,9 @@ namespace Awoo
             }
         }
 
-        public SettingWin settingwin;
         private void button_Click(object sender, RoutedEventArgs e)
         {
+            SettingWin settingwin = new SettingWin(this);
             settingwin.introduce.Text = intro;
             settingwin.Avatar.Source = Shared.Base64ToImage(avatar);
             settingwin.password.Password = "";
