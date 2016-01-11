@@ -25,7 +25,6 @@ namespace Awoo
         public string username;
         public string token;
         System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
-        bool blinking = false;
         public ChatWin(string un, string tk, string fun )
         {
             fusername = fun;
@@ -73,7 +72,7 @@ namespace Awoo
             catch
             {
                 MessageBox.Show("Server is disconnected", "Error");
-                Application.Current.Shutdown();
+                this.Close();
             }
         }
 
@@ -91,7 +90,7 @@ namespace Awoo
 
         private void ExitBtn_Click(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown();
+            this.Close();
             //this.Close();
         }
 
@@ -124,19 +123,22 @@ namespace Awoo
             //            throw (e);
 
             //            if (msg.sender == username)
-            if (msg.sender == username)
-                grid.HorizontalAlignment = HorizontalAlignment.Right;
             title.Content = msg.timestamp + "  " + msg.sender;
             grid.Children.Add(title);
             Grid.SetRow(title, 0);
+            if (msg.sender == username)
+            {
+                grid.HorizontalAlignment = HorizontalAlignment.Right;
+                title.HorizontalContentAlignment = HorizontalAlignment.Right;
+            } 
 
             UIElement obj = null;
             if (msg.content.StartsWith(TypeImgBase64.header))
                 obj = TypeImgBase64.parse(msg.content);
             else if (msg.content.StartsWith(TypeTextRaw.header))
-                obj = TypeTextRaw.parse(msg.content);
+                obj = TypeTextRaw.parse(msg.content, username==msg.sender);
             else
-                obj = TypeText.parse(msg.content);
+                obj = TypeText.parse(msg.content, username==msg.sender);
 
             if (!object.ReferenceEquals(obj, null))
             {

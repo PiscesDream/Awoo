@@ -40,6 +40,7 @@ namespace Awoo
 
         public MainWin(string un, string tk)
         {
+            MessageBox.Show("Initializing the panel, please wait for seconds ...");
             username = un;
             token = tk;
 
@@ -48,16 +49,16 @@ namespace Awoo
             initMain();
             initFriends();
 
-            // this.Topmost = true;
+            this.Topmost = true;
 
             blinkcolor = Color.FromArgb(0xFF, 0xC3, 0xD6, 0xff);
 
             Shared.configpath = @"./" + username + "_conf.xml";
             try { Shared.config = Config.load(); } catch { Shared.config = null; }
 
-            dispatcherTimer.Tick += blinking;
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 500);
-            dispatcherTimer.Start();
+            //dispatcherTimer.Tick += blinking;
+            //dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 500);
+            //dispatcherTimer.Start();
         }
         public void blinking(object source, EventArgs e)
         {
@@ -96,7 +97,7 @@ namespace Awoo
             ReplyUserFetch res = 
                 Shared.sendrecvjson<FormUserFetchByUsername, ReplyUserFetch>
                 (Shared.HOST, "/api/user/fetch/username", new FormUserFetchByUsername(username));
-            if (res.reply != "succeed") { MessageBox.Show(res.reply, "Error"); this.Close(); }
+            if (res.reply != "succeed") { MessageBox.Show(res.reply, "Error"); Application.Current.Shutdown(); }
 
             id = res.id;
             avatar = res.avatar;
@@ -114,7 +115,7 @@ namespace Awoo
             ReplyUserFetchFriends res = 
                 Shared.sendrecvjson<FormUserFetchFriends, ReplyUserFetchFriends>
                 (Shared.HOST, "/api/user/fetch/friends", new FormUserFetchFriends(username, token));
-            if (res.reply != "succeed") { MessageBox.Show(res.reply, "Error"); this.Close(); }
+            if (res.reply != "succeed") { MessageBox.Show(res.reply, "Error"); Application.Current.Shutdown(); }
 
             List.Items.Clear();
             friends_username.Clear();

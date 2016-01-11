@@ -22,6 +22,8 @@ namespace Awoo
         public RegWin()
         {
             InitializeComponent();
+
+            HostInput.Text = Shared.HOST;
         }
 
         private void ExitBtn_Click(object sender, RoutedEventArgs e)
@@ -47,6 +49,7 @@ namespace Awoo
                 return;
             }
 
+            Shared.HOST = HostInput.Text;
             Reply res =
                 Shared.sendrecvjson<FormRegister, Reply>
                     (Shared.HOST, "/api/register", new FormRegister(EmailInput.Text, 

@@ -11,3 +11,5 @@ bin/
 release/
 debug/
 refers/
+report/
+!report/report.tex

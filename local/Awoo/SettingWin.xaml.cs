@@ -87,8 +87,10 @@ namespace Awoo
               "JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|" +
               "Portable Network Graphic (*.png)|*.png";
             if (op.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
                 avatar = Shared.FileToBase64(op.FileName, true);
-            this.Avatar.Source = Shared.Base64ToImage(avatar);
+                this.Avatar.Source = Shared.Base64ToImage(avatar);
+            }
         }
     }
 }

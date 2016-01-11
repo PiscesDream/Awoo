@@ -1,0 +1,294 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[UTF8]{ctexcap}
+%\usepackage{xeCJK}
+%\setCJKmainfont{SimSun}
+
+\usepackage{geometry}
+ \geometry{
+     a4paper,
+     total={210mm,297mm},
+     left=23mm,
+     right=23mm,
+     top=23mm,
+     bottom=23mm,
+ }
+\linespread{1.2}
+
+\usepackage{fancyvrb, graphicx, hyperref}
+\usepackage{listings}
+
+\usepackage[final]{showkeys}
+\usepackage{hyperref}
+\usepackage{amsmath}
+
+\usepackage{float, graphicx}
+
+\usepackage{indentfirst}
+\setlength{\parindent}{2em}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy} \lhead{高级编程技术}\rhead{\thepage}
+\setcounter{tocdepth}{3}
+
+%\usepackage[chinese]{babel} % English language/hyphenation
+
+
+\usepackage{listings}
+\usepackage{color}
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\lstset{ %
+  backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
+  basicstyle=\footnotesize,        % the size of the fonts that are used for the code
+  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                 % sets automatic line breaking
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{red},    % comment style
+  deletekeywords={...},            % if you want to delete keywords from the given language
+  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+  frame=single,                    % adds a frame around the code
+  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+  keywordstyle=\color{blue},       % keyword style
+  otherkeywords={*,...},            % if you want to add more keywords to the set
+  numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+  numbersep=5pt,                   % how far the line-numbers are from the code
+  numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+  rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,          % underline spaces within strings only
+  showtabs=false,                  % show tabs within strings adding particular underscores
+  stepnumber=2,                    % the step between two line-numbers. If it's 1, each line will be numbered
+  stringstyle=\color{mymauve},     % string literal style
+  tabsize=2,                       % sets default tabsize to 2 spaces
+  title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+}
+
+
+\title{高级编程技术}
+\author{计科一班~赖少凡 13349047}
+\date{January 8, 2016}
+
+
+\begin{document}
+
+\begin{titlepage}
+	\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+	\center
+	
+	\includegraphics[width=0.3\textwidth]{./sysu.jpg}~\\[1cm]
+	\textsc{\LARGE 中山大学}\\[1.5cm]
+	\textsc{\Large 高级编程技术}\\[0.5cm]
+%	\textsc{\large Minor Heading}\\[0.5cm]
+	
+	\HRule \\[0.8cm]
+	{ \huge \bfseries 轻量级在线聊天框架——Awoo}\\[0.4cm]
+	\HRule \\[1.5cm]
+	
+	\begin{minipage}{0.4\textwidth}
+		\begin{flushleft} \large
+			\emph{作者:}\\
+			赖少凡
+		\end{flushleft}
+	\end{minipage}
+	~
+	\begin{minipage}{0.4\textwidth}
+		\begin{flushright} \large
+		\emph{指导老师:} \\
+			李才伟
+		\end{flushright}
+	\end{minipage}\\[4cm]
+
+
+	{\large 2016年1月8日}\\[3cm]
+
+	\end{titlepage}
+
+\tableofcontents
+
+\section*{摘要}
+    我实现了一个开源轻量级的在线聊天框架——Awoo，该框架分为服务器端和Windows客户端两个部分。用户可以在任意网络上部署自己的服务器端，然后在联网情况下使用Windows客户端的在线聊天等功能。该框架架构清晰，且采用统一的RESTful API，二次开发者能够很轻松地将该框架拓展到网页、平板、不同的操作系统或平台上。此外，我还为试用该框架的用户搭建了一个免费的服务器端(\cite{1})。
+
+\section{框架介绍}
+    \subsection{框架名字来源}
+        Awoo为狼吼叫的拟声词。在自然界中，狼吼是狼群交流的一个重要途径\textsuperscript{\cite{2}}，如聚集其他狼群狩猎等。狼吼在风速较小的时候能够传达到很远的地方。本框架取名于这个意思，旨在用最简单、最轻量级的方法，将信息在网络上传播。
+    \subsection{服务器端}
+        与传统的qq、微信等聊天软件不同，Awoo的服务器端采用的是\textbf{可分布部署}的模式，用户可以将Awoo Server部署在自己想要的任何地方：互联网上、局域网上、甚至本机上。如一个公司内网需要一个聊天软件，但是又不想与外网相连，这时候就可以将Awoo Server部署在局域网的服务器上。同时我也部署了一个免费的、全球范围可访问的服务器端(\cite{1})，连接到互联网的用户可以直接使用\cite{1}进行聊天。\par
+        服务器端使用Flask\textsuperscript{\cite{3}}框架进行编写。Flask是一个轻量级的网站后端框架，其学习代价小、灵活性高，适合开发轻量级的服务。
+    \subsection{Windows客户端}
+        Awoo提供了Windows平台下的客户端，需要在.Net 4.5环境中运行。该客户端调用了Awoo提供的所有基础功能，如登陆、注册、在线聊天、绘图聊天等。此外，该客户端还提供一些本地的个性化选项，如记忆登陆名、自定义字体等。\par
+        Awoo for Windows是利用WPF技术开发的，使用C\#语言编写。
+    \subsection{框架接口}
+        由于用户端的平台（如平板、手机、PC等）差异巨大，且就PC 而言也有许多不同的系统（如Windows、Linux、MacOS等），因此在时间和精力的限制下，我只开发了Windows平台的客户端。但是，在接口的设计上，为了契合多平台多系统的特性，Awoo 特地采用了RESTful API来作为接口形式。RESTful广泛用于浏览器与网站服务器的交互（如简单的GET和POST请求），同时许多开源、商用服务平台也是采用了API接口。\par
+        使用RESTful能将Awoo框架的可移植性、二次开发功能发挥到极致。二次开发者可以在网页、平板、手机、各种系统的PC上开发自己的聊天软件。而且服务器端
+
+\section{框架细节}
+    \subsection{服务器端}
+        由于服务器端不是本次报告的重点，因此会忽略一些Python细节，着重介绍服务器端与客户端如何交互。
+        \subsubsection{API}
+            Awoo共有20余个API，均是以RESTful（主要是POST）的形式进行交互，格式均为Application/Json。在用户需要获取一些数据时（如获取信息），客户端通过发送一个指定内容的包（如用户名、对方用户名、token）到服务器的指定接口（如/api/msg/fetch），便可收到一个指定格式的回复。通过对回复内容进行解析、处理，最后呈现给用户。
+        \subsubsection{验证方式}
+            首先，用户在成功登陆后会产生一个临时生成的token（类似于网页中的cookie）。在用户登陆后需要操作时，将通过用户名加token的方式验证，无需再次验证密码，减少风险。在新的版本，Awoo的token将有一定的生命周期，以增加安全性；在两个token交接的短时间内同时承认两个token的合法性，之后改用新的token，这样客户端就会有一定的时间执行token的交接，此方式受微信公众号验证方式的启发\textsuperscript{\cite{4}}。
+        \subsubsection{存储}
+            Awoo支持离线消息，即用户在下线时依旧可以接受信息，在重新登录时未读取信息将会被推送到客户端。由于目前使用人数较少，因此不会定时对数据库进行备份和清空，用户可以查看从注册到任何时刻的所有聊天记录。
+
+    \subsection{Windows客户端}
+        本节将结合着使用界面以及一些核心代码进行介绍：
+        \subsubsection{公共代码}
+            由于程序中许多代码段是共享的，因此我在Common.cs中定义了一个Shared类，它是一个静态类，里面存储了一些“全局”参数，同时实现了一些常用的代码片段（如移动窗体、图片转化、信息发送接收等）。其余窗体类通过调用Shared里的函数来实现代码复用。此外，客户端用于和服务器端交互的数据包格式均定义在Common.cs中，作为一个类存在。
+        \subsubsection{信息交互}
+            在客户端与服务器端交互时，大致经历了以下步骤：\par
+            \begin{enumerate}
+                \item 从窗体获取数据（如用户名、密码）
+                \item 将数据打包成一个对象（如new FormLogin(username, password)）
+                \item 使用RestSharp\textsuperscript{\cite{6}}将对象序列化（如"\{username='admin',password='123456'\}"）
+                \item 将序列化的结果发送给服务器
+                \item 从服务器接受到反馈（否则抛出异常）
+                \item 将反馈解序列化成一个对象（如Reply(result='succeed')）
+                \item 从对象中读取信息，并做相应处理
+            \end{enumerate}
+            其中发送和接受到的信息要被（解）序列化成为两个对象，因此需要定义两个类。对于不同的交互（如登陆、发送消息、更新个人信息等），所用的表单格式也不一样，即每个交互都需要两个不同的类来进行抽象（有些交互可以共用一个类）。这样一来需要编写多个发送、接收、处理函数，我编写了一个泛型函数来完成这件事情：
+            \begin{figure}[H]
+                \centering
+                \includegraphics[scale=1.0]{ss14.png}
+                \caption{发送、接收信息的函数模板，其中T1为发送的类，T2为接收的类，"where T2:new()"保证了T2不能是一个抽象类，而是一个能够实例化的类}
+            \end{figure}
+        \subsubsection{登陆界面}
+            一打开Awoo，可以见到一个登陆界面。\par
+            \begin{figure}[H]
+                \centering
+                \includegraphics[scale=1.0]{ss1.png}
+                \caption{登陆界面}
+            \end{figure}
+            为了美观和新颖，程序中所有界面没有使用默认的Windows 窗体模板，而是通过自己设计的WPF模板来做到边框圆角、高光反射以及磨砂效果。其嵌套结构如下：\par
+            \begin{itemize}
+                \item Window：最外层为窗口本身，因为需要去掉windows的模式，因此需要将WindowStyle设为None（取消顶部按钮以及标题栏）、令ResizeMode="NoResize"（去掉四边的拉伸边框）、令
+                    AllowsTransparency="True"（隐去默认窗体）
+                \item Border：为自定义边框层，通过设置CornerRadius属性来调整圆角的平滑度，同时将BroderBrush设置为白色，凸显出反光效果。
+                \item Grid：为内容层，里面放置着主内容。其中有一个自定义的按钮作为新模板的关闭键，有一个label作为新模板的标题栏。
+            \end{itemize}
+            此外，整个窗体（除了按钮、文本框等交互控件），其他部分都是可以通过按紧鼠标来拖拽窗口。其原理是通过user32.dll文件中的sendmessage函数，对窗体的hanlde发送一个特定的信息，使得窗体能够被拖拽。代码大致如下：\par
+            \begin{figure}[H]
+                \centering
+                \includegraphics[scale=1.0]{ss2.png}
+                \caption{移动窗口代码，通过发送Windows消息来实现}
+            \end{figure}
+            软件将会把上一次登陆的服务器地址、用户名、密码记录在一个本地文件中。在用户打开软件时尝试加载，在用户登陆时更新。如果没有注册账户，也可以点击注册按钮进行注册。注册界面如下：\par
+            \begin{figure}[H]
+                \centering
+                \includegraphics[scale=1.0]{ss3.png}
+                \caption{注册窗口}
+            \end{figure}
+            在成功登陆之后，软件会弹出一个对话框，提示用户已登录。
+        \subsubsection{主界面}
+            在成功登陆之后，可能需要等待3~5秒（视网速而定），这时客户端将从服务器端加载一些必要的信息，并且准备进入主界面。详情见图\par
+            \begin{figure}[H]
+                \centering
+                \includegraphics[scale=1.0]{ss5.png}
+                \caption{主界面，从上到下分别为：用户信息、朋友列表、搜索/添加朋友按钮、个人设置。在朋友列表中，右键可以对一个好友发起聊天，或删除该好友。}
+            \end{figure}
+        \subsubsection{聊天界面}
+            在主界面右键朋友、选择send message to ... 便可进入聊天窗口，或直左键接双击朋友所在的行也可以。\par
+            \begin{figure}[H]
+                \centering
+                \includegraphics[scale=1.0]{ss6.png}
+                \caption{聊天窗口，从上到下分别为：朋友名字、聊天内容、工具栏、输入栏、操作栏}
+            \end{figure}
+            其中工具栏共有三个小按钮，分别为：发送图片、绘制图片并发送、查看历史消息。操作栏的按钮功能为：强制刷新信息（程序默认会0.3秒获取信息并刷新）、关闭聊天窗口和发送消息（ctrl+enter为发送快捷键）。\par
+            点击发送图片按钮后，将能从文件系统中选取图片，并发送给好友。此处使用到了Windows自带的文件查看窗口。图片以Base64格式编码成字符串发送，接受后又重新解码成图片：\par
+            \begin{figure}[H]
+                \centering
+                \includegraphics[scale=1.0]{ss7.png}
+                \caption{发送图片功能}
+            \end{figure}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[scale=1.0]{ss8.png}
+                \caption{对图像进行Base64编码解码的过程}
+            \end{figure}
+            点击绘制图片并发送按钮后，会弹出一个绘图框。绘图框支持铅笔画图、直线画图、方框画图、椭圆画图等，其功能是在李才伟老师\textsuperscript{\cite{5}}的WPF绘图程序上改进得到的。在绘制完图片后，WPF通过截屏将窗体的画布部分截取出来，然后编码成Base64发送，其原理与直接发送图片类似。\par
+            \begin{figure}[H]
+                \centering
+                \includegraphics[scale=1.0]{ss9.png}
+                \caption{发送文字、图片、绘图}
+            \end{figure}
+        \subsubsection{接受信息}
+            在上述操作后，test账户接收到了admin的消息，并且这些消息是未读的，因此admin的头像将在test账户的朋友列表中闪动，提示test去读取消息：\par
+             \begin{figure}[H]
+                \centering
+                \includegraphics[scale=1.0]{ss10.png}
+                \caption{未读消息闪烁提示}
+            \end{figure}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[scale=1.0]{ss11.png}
+                \caption{test收到admin发送的信息}
+            \end{figure}
+            历史信息功能与接收信息类似，只不过客户端将获取所有admin与test的历史信息。
+        \subsubsection{个性化设置}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[scale=1.0]{ss12.png}
+                \caption{主窗口->settings->个性化设置，从上到下依次是：聊天窗口字体设置，个人介绍，密码修改，头像修改}
+            \end{figure}        
+            每个用户可以个性化设置自己聊天窗口的字体，这些信息将保存在本地，下次在本机使用相同用户登陆时就无需再次设置。\par
+            在个性化设置窗口还可以填写个人介绍、更改密码、更改头像。更改头像时如果选择的头像超过64*64像素，程序将自动进行压缩。
+        \subsubsection{搜索、添加、删除好友}            
+            在主窗口下的search按键可以搜索名字中带有给定字符的用户名，搜索到后可以通过Add按钮添加对方为好友。此时系统会自动发送一句问候给对方。如果想删除一个联系人，只需要在好友列表中右键->detele即可删除该好友。\par
+             \begin{figure}[H]
+                \centering
+                \includegraphics[scale=1.0]{ss13.png}
+                \caption{搜索、添加、删除好友}
+            \end{figure}
+        \subsubsection{自动隐藏窗口}
+            当主界面被拖动到屏幕顶端时，会自动缩成一个窄长条。当鼠标再次划过时，会恢复原界面。
+            \begin{figure}[H]
+                \centering
+                \includegraphics[scale=1.0]{ss15.png}
+                \caption{主界面在顶部的自动隐藏}
+            \end{figure}
+            
+
+    \subsection{其他细节}
+        \subsubsection{测试账户}
+            测试账户名为test，密码为123456。
+        \subsubsection{库}
+            主要使用的库为Python的Flask\textsuperscript{\cite{3}}（服务器后端），以及C\#的RestSharp\textsuperscript{\cite{6}}（网络通信）。
+        \subsubsection{版本控制}
+            开发过程中通过Git进行版本控制，历史版本以及源码可以在\cite{7}中获取。服务器端的文件在"\\server"中，客户端的文件在"\\local\\Awoo"中。
+        \subsubsection{延时}
+            因为本程序使用的是单线程通信，因此在网络延时高的环境下，软件界面可能因为网络延时而会有卡顿现象。
+        \subsubsection{字体对话框}
+            Windows自带的FontDialog对WPF的支持并不是十分好，因此有一定可能在更改字体时导致字体无法转换而出错。
+            
+\section{总结}
+    在这次大作业中，我觉得我的作业（Awoo）主要有以下特点：\par
+    \begin{itemize}
+        \item 架构导向而非单一软件导向：与单纯开发一个一对一聊天软件不同，我的目的是开发一个完整的、从服务器端到客户端的框架。
+        \item 框架灵活、可二次开发、易拓展：与传统的聊天软件不同，Awoo相对灵活，可以部署在不同的网络范围内。我的框架还是开源的，代码结构较为清晰，方便二次开发。同时我采用了RESTful而非socket等方式进行通信，使得Awoo的可拓展性更好（如网页端对socket支持差）。
+        \item 轻量级：Awoo以轻量级为特性，客户端大小只有500KB。虽然某些设计牺牲掉了一部分效率，但是这个框架做到了”麻雀虽小，五脏俱全“的效果。
+        \item WPF：Awoo客户端基于.Net Framework 4.5.2，并且所有的窗体都是通过WPF实现的，WPF相比MFC是比较现代的软件框架。而且我对Awoo的设计也做了数次修改，使其外观更加好看、时尚。
+        \item 编程技巧：在Awoo开发过程中，我运用到了C\#的各种特性，如：泛型函数、泛型约束、静态类（以实现全局变量）等。
+    \end{itemize}
+    在开发Awoo的过程中，我也遇到了不少难题：\par
+    \begin{itemize}
+        \item 虽然Visual Studio是一个十分强大的武器，但是学会高效实用VS并不是一朝一夕的事情。在开发中，我在摸索中学到了定义跳转、代码自动生成、自动修复错误等小功能，这些功能能够使开发更加快捷高效。其中有一点我觉得VS做的十分出色，我还掌握了对程序包管理控制台（PM）的运用。这个包管理器能够有效地下载、安装、卸载、管理第三方包，当工程中需要一个第三方插件时，只需要一条命令就能部署完整个环境，而不用手动去下载、编译、配置相对路径。
+        \item XAML对窗体的设计并没有想象中那么简单，有人将XAML与HTML进行类比，但是其区别还是很多的。在HTML中，我们习惯用CSS来编写样式；而在XAML中，除了Style之外，还有诸如Resources、Template等诸多概念，它们在App的生成中扮演着不同的角色。同时，抛开语言的区别，WPF也与Delphi相比也增加了很多新特性（属性、行为、概念），如何利用这些特性来实现一个功能并不是那么简单，往往需要查询大量的文档、例子才能学习到其精髓。
+        \item 网络编程本身并不是一个难点，有第三方的库可以实现自动的发送和接收，难点在于对数据在本地的处理。因为C\#不像python一样，它是一个静态类型的语言。对于不同的表单和不同的回复需要设计不同的类来抽象其数据结构，同时又需要统一收发网络包的接口，这就需要对C\#的泛型编程有一定的了解。
+    \end{itemize}
+    而Awoo也存在很多可以改进的地方：如更多的个性化选项、多线程异步获取信息、对所以异常的正常处理等等。总而言之，在这次大作业设计中，我学到了许多前沿的C\#、.Net、WPF开发知识，并且挑战了自己对一个大框架的设计、对UI界面的设计，是相当有收获的一次作业。
+
+\clearpage
+\renewcommand\refname{参考文献}
+\begin{thebibliography}{99}
+    \bibitem{1} \url{http://awoo.hapd.info/} 免费的、全球互联网范围内的服务器端
+    \bibitem{2} \url{http://www.wolf.org/wolf-info/basic-wolf-info/biology-and-behavior/communication/} How wolf communicate, Access Date Jan 8, 2016
+    \bibitem{3} \url{http://flask.pocoo.org/} Flask框架
+    \bibitem{4} \url{http://mp.weixin.qq.com/wiki/14/9f9c82c1af308e3b14ba9b973f99a8ba.html} 微信公众号对token的处理 
+    \bibitem{5} \url{http://sist.sysu.edu.cn/~isscwli/} 李才伟老师主页
+    \bibitem{6} \url{http://restsharp.org/} RestSharp主页
+    \bibitem{6} \url{https://github.com/piscesdream/awoo} Awoo工程主页
+\end{thebibliography}
+
+\end{document}

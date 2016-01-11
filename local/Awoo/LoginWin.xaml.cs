@@ -64,6 +64,7 @@ namespace Awoo
             catch (Exception)
             {
                 MessageBox.Show("Cannot login, please connect with your service provider.", "Error");
+                return;
             }
 
 

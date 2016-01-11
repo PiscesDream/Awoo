@@ -148,11 +148,12 @@ namespace Awoo
     public static class TypeText
     {
         public const string header = "";
-        public static Label parse(String s)
+        public static Label parse(String s, bool rightalign=false)
         {
             Label label = new Label();
             label.Content = s; 
             label.Content = /*"RawText:"+*/s.Substring(header.Length);
+            if (rightalign) label.HorizontalContentAlignment = HorizontalAlignment.Right;
             Shared.renderLabel(label);
             return label;
         }
@@ -160,10 +161,11 @@ namespace Awoo
     public static class TypeTextRaw
     {
         public const string header = "{$Text.Raw}";
-        public static Label parse(String s)
+        public static Label parse(String s, bool rightalign=false)
         {
             Label label = new Label();
             label.Content = /*"RawText:"+*/s.Substring(header.Length);
+            if (rightalign) label.HorizontalContentAlignment = HorizontalAlignment.Right;
             Shared.renderLabel(label);
             return label;
         }
@@ -211,43 +213,38 @@ namespace Awoo
 
 
         // move window
-        public const int WM_NCLBUTTONDOWN = 0xA1;
-        public const int HT_CAPTION = 0x2;
-        [DllImportAttribute("user32.dll")]
+        public const int WM_NCLBUTTONDOWN = 0xA1; // 消息编号
+        public const int HT_CAPTION = 0x2; // 参数
+        [DllImportAttribute("user32.dll")] // 加载DLL
         public static extern int SendMessage(IntPtr hWnd, int Msg,
-                int wParam, int lParam);
+                int wParam, int lParam); // 引用外部符号
+        [DllImportAttribute("user32.dll")] // 加载DLL
+        public static extern bool ReleaseCapture(); // 引用外部符号
 
-        [DllImportAttribute("user32.dll")]
-        public static extern bool ReleaseCapture();
-
-        public static void move_window(System.Windows.Window window) { 
-            ReleaseCapture();
+        public static void move_window(System.Windows.Window window) { // 处理函数
+            ReleaseCapture(); // 释放对鼠标的捕捉
             SendMessage(new WindowInteropHelper(window).Handle,
-                WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+                WM_NCLBUTTONDOWN, HT_CAPTION, 0); // 发送一个消息给窗体的句柄
         }
 
         public static string HOST = "http://localhost:5000/";
         //public static string HOST = "http://awoo.hapd.info";
+
         public static T2 sendrecvjson<T1, T2>(string host, string url, T1 obj) where T2 : new() { 
+            // 建立连接
             var client = new RestClient(host);
+            // 设置传送格式
             var request = new RestRequest(url, Method.POST);
             request.RequestFormat = RestSharp.DataFormat.Json;
+            // 添加传送内容
             request.AddBody(obj);
-
+            // 开始传送
             IRestResponse<T2> response = client.Execute<T2>(request);
+            // 返回结果
             return response.Data;
         }
 
-        public static BitmapImage Base64ToImage(string base64String)
-        {
-            // Convert Base64 String to byte[]
-            byte[] imageBytes = Convert.FromBase64String(base64String);
-            BitmapImage image = new BitmapImage();
-            image.BeginInit();
-            image.StreamSource = new MemoryStream(imageBytes);
-            image.EndInit();
-            return image;
-        }
+
         private static System.Drawing.Bitmap ResizeBitmap(System.Drawing.Bitmap sourceBMP, int width, int height)
         {
             System.Drawing.Bitmap result = new System.Drawing.Bitmap(width, height);
@@ -256,15 +253,28 @@ namespace Awoo
             return result;
         }
 
+        public static BitmapImage Base64ToImage(string base64String)
+        {
+            // Convert Base64 String to byte[]
+            // 将字符串转换成字节流
+            byte[] imageBytes = Convert.FromBase64String(base64String);
+            BitmapImage image = new BitmapImage();
+            image.BeginInit();
+            // 将字节流导入内存，再赋值给图片
+            image.StreamSource = new MemoryStream(imageBytes);
+            image.EndInit();
+            return image;
+        }
         public static String FileToBase64(string filename, bool resize=false)
         {
             string base64;
+            // 读入文件并压缩大小
             System.Drawing.Bitmap bm = new System.Drawing.Bitmap(filename);
-            if (resize) bm = ResizeBitmap(bm, 64, 64);
-            {
-                using (MemoryStream ms = new MemoryStream())
-                {
+            if (resize) bm = ResizeBitmap(bm, 64, 64); {
+                using (MemoryStream ms = new MemoryStream()) {
+                    // 将bitmap中的信息保存到内存流里
                     bm.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    // 将内存流转化成字符串
                     base64 = Convert.ToBase64String(ms.ToArray());
                 }
             }
