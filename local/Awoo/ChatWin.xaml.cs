@@ -24,7 +24,42 @@ namespace Awoo
         public string fusername;
         public string username;
         public string token;
-        System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+        //System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+
+    //  Timer =====================================================================================
+        delegate void UIDelegate();
+        static ReplyMsgFetch msgbox = new ReplyMsgFetch();
+        void updatemsglist()
+        {
+            statuscircle.Fill = new SolidColorBrush(Color.FromArgb(128, 64, 255, 64));
+            foreach (var msg in msgbox.messages)
+                plotMsg(msg);
+            msgbox.messages.Clear();
+        }
+        void updatestatuswarning()
+        {
+            statuscircle.Fill = new SolidColorBrush(Color.FromArgb(128, 255, 64, 64));
+        }
+        void t_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            msgbox =
+                Shared.sendrecvjson<FormMsgFetch, ReplyMsgFetch>
+                (Shared.HOST, "/api/msg/fetch", new FormMsgFetch(username, token, fusername));
+            try
+            {
+                string a = msgbox.reply;
+                UIDelegate UIhandler = new UIDelegate(updatemsglist);
+                Application.Current.Dispatcher.BeginInvoke(UIhandler);
+            }
+            catch
+            {
+                UIDelegate UIwarning = new UIDelegate(updatestatuswarning);
+                Application.Current.Dispatcher.BeginInvoke(UIwarning);
+            }
+        }
+        System.Timers.Timer timer;
+
+
         public ChatWin(string un, string tk, string fun )
         {
             fusername = fun;
@@ -34,11 +69,13 @@ namespace Awoo
             InitializeComponent();
 
             initMain();
-            fetchMsg();
 
-            dispatcherTimer.Tick += OnTimedEvent;
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
-            dispatcherTimer.Start();
+            timer = new Timer(300);
+            timer.Elapsed += t_Elapsed;
+            timer.Start();
+            //dispatcherTimer.Tick += OnTimedEvent;
+            //dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
+            //dispatcherTimer.Start();
         }
         public void initMain()
         {
@@ -58,25 +95,7 @@ namespace Awoo
             }
         }
 
-        private void fetchMsg()
-        {
-            ReplyMsgFetch res =
-                Shared.sendrecvjson<FormMsgFetch, ReplyMsgFetch>
-                (Shared.HOST, "/api/msg/fetch", new FormMsgFetch(username, token, fusername));
-
-            try
-            {
-                foreach (var msg in res.messages)
-                    plotMsg(msg);
-            }
-            catch
-            {
-                MessageBox.Show("Server is disconnected", "Error");
-                this.Close();
-            }
-        }
-
-        public void sendMsg(string msg)
+       public void sendMsg(string msg)
         {
             ReplyMsgFetch res =
                 Shared.sendrecvjson<FormMsgSend, ReplyMsgFetch>
@@ -150,19 +169,10 @@ namespace Awoo
             Flist.ScrollIntoView(grid);
         }
 
-        private void refresh_Click(object sender, RoutedEventArgs e)
-        {
-            fetchMsg();
-        }
-
-        public void OnTimedEvent(object source, EventArgs e)
-        {
-            fetchMsg();
-        }
-
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            dispatcherTimer.Stop();
+            timer.Stop();
+            //dispatcherTimer.Stop();
         }
 
         private void Fmessage_KeyDown(object sender, KeyEventArgs e)

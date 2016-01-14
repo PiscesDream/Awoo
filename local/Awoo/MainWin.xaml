@@ -33,27 +33,35 @@
                     </LinearGradientBrush>
                 </Border.BorderBrush>
 
-                <Button x:Name="ExitBtn" Content="x" HorizontalAlignment="Right" Margin="0,0,6,-2" VerticalAlignment="Top" 
-                        Width="20" Height="20" 
-                        Background="{x:Null}" Click="ExitBtn_Click" FontSize="9.333" BorderBrush="{x:Null}" Foreground="White"/>
-            </Border>
+                <Grid>
+                    <Button x:Name="ExitBtn" Content="x" HorizontalAlignment="Right" Margin="0,0,6,0" VerticalAlignment="Top" 
+                        Width="25" Height="22" 
+                        Background="{x:Null}" Click="ExitBtn_Click" FontSize="13.333" BorderBrush="{x:Null}" Foreground="White"/>
 
-            <Border Height="70" Width="70" MouseDown="move_window" 
-                    VerticalAlignment="Top" BorderThickness="1,1,1,1" 
-                    CornerRadius="6,6,6,6" Margin="9,32,0,0" 
-                    HorizontalAlignment="Left" Background="White">
-                <Image x:Name="Avatar" 
-                       MouseDown="move_window" Margin="2"/>
+                    <Ellipse x:Name="statuscircle" Margin="3,3,0,0" HorizontalAlignment="Left" Width="16" Height="16" VerticalAlignment="Top">
+                        <Ellipse.Fill>
+                            <SolidColorBrush Color="#FFFF4040" Opacity="0.5"/>
+                        </Ellipse.Fill>
+                    </Ellipse>
+
+                    <Border Height="70" Width="70" MouseDown="move_window" 
+                        VerticalAlignment="Top" BorderThickness="1,1,1,1" 
+                        CornerRadius="6,6,6,6" Margin="9,32,0,0" 
+                        HorizontalAlignment="Left" Background="White">
+                        <Image x:Name="Avatar" 
+                           MouseDown="move_window" Margin="2"/>
+                    </Border>
+                    <Label x:Name="Username" Content="Label" 
+                       MouseDown="move_window" Margin="84,34,10,0" 
+                       VerticalAlignment="Top" FontSize="16" 
+                       Height="26" VerticalContentAlignment="Center" Foreground="White"/>
+                    <Label x:Name="Intro" Content="Label" 
+                       MouseDown="move_window"
+                       Margin="84,55,10,0" 
+                       VerticalAlignment="Top" 
+                       Height="47" Foreground="White"/>
+                </Grid>
             </Border>
-            <Label x:Name="Username" Content="Label" 
-                   MouseDown="move_window" Margin="84,34,10,0" 
-                   VerticalAlignment="Top" FontSize="16" 
-                   Height="26" VerticalContentAlignment="Center" Foreground="White"/>
-            <Label x:Name="Intro" Content="Label" 
-                   MouseDown="move_window"
-                   Margin="84,55,10,0" 
-                   VerticalAlignment="Top" 
-                   Height="47" Foreground="White"/>
 
 
 

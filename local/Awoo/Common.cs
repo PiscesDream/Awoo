@@ -227,8 +227,8 @@ namespace Awoo
                 WM_NCLBUTTONDOWN, HT_CAPTION, 0); // 发送一个消息给窗体的句柄
         }
 
-        public static string HOST = "http://localhost:5000/";
-        //public static string HOST = "http://awoo.hapd.info";
+        //public static string HOST = "http://localhost:5000/";
+        public static string HOST = "http://awoo.hapd.info";
 
         public static T2 sendrecvjson<T1, T2>(string host, string url, T1 obj) where T2 : new() { 
             // 建立连接

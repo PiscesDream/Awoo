@@ -36,11 +36,63 @@ namespace Awoo
         public string token;
         public List<string> friends_username = new List<string>();
         public List<Grid> friends_grid = new List<Grid>();
-        System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+//        System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+
+    //  Timer =====================================================================================
+        delegate void UIDelegate();
+        static ReplyMsgNotice noticelist = new ReplyMsgNotice();
+        public void blinking()
+        {
+            statuscircle.Fill = new SolidColorBrush(Color.FromArgb(128, 64, 255, 64));
+
+            Brush brush;
+            if (blinkbool)
+                brush = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+            else
+                brush = new SolidColorBrush(blinkcolor);
+            blinkbool = !blinkbool;
+
+            try
+            {
+                for (int i = 0; i < friends_username.Count; ++i)
+                {
+                    friends_grid[i].Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                    foreach (var username in noticelist.usernames)
+                        if (username == friends_username[i])
+                        {
+                            friends_grid[i].Background = brush;
+                            break;
+                        }
+                }
+            }
+            catch { }
+        }
+        public void statuswarning()
+        {
+            statuscircle.Fill = new SolidColorBrush(Color.FromArgb(128, 255, 64, 64));
+        }
+        void t_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            noticelist = 
+                Shared.sendrecvjson<FormMsgNotice, ReplyMsgNotice>
+                (Shared.HOST, "/api/msg/fetch/notice", new FormMsgNotice(username, token));
+
+            try
+            {
+                string a = noticelist.reply;
+                UIDelegate UIhandler = new UIDelegate(blinking);
+                Application.Current.Dispatcher.BeginInvoke(UIhandler);
+            }
+            catch
+            {
+                UIDelegate UIwarning = new UIDelegate(statuswarning);
+                Application.Current.Dispatcher.BeginInvoke(UIwarning);
+            }
+        }
+        System.Timers.Timer timer;
 
         public MainWin(string un, string tk)
         {
-            MessageBox.Show("Initializing the panel, please wait for seconds ...");
             username = un;
             token = tk;
 
@@ -56,42 +108,13 @@ namespace Awoo
             Shared.configpath = @"./" + username + "_conf.xml";
             try { Shared.config = Config.load(); } catch { Shared.config = null; }
 
+            timer = new System.Timers.Timer();
+            timer.Elapsed += t_Elapsed;
+            timer.Start();
             //dispatcherTimer.Tick += blinking;
             //dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 500);
             //dispatcherTimer.Start();
         }
-        public void blinking(object source, EventArgs e)
-        {
-            Brush brush;
-            if (blinkbool)
-                brush = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
-            else
-                brush = new SolidColorBrush(blinkcolor);
-            blinkbool = !blinkbool;
-
-            ReplyMsgNotice res = 
-                Shared.sendrecvjson<FormMsgNotice, ReplyMsgNotice>
-                (Shared.HOST, "/api/msg/fetch/notice", new FormMsgNotice(username, token));
-            try
-            {
-                for (int i = 0; i < friends_username.Count; ++i)
-                {
-                    friends_grid[i].Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
-                    foreach (var username in res.usernames)
-                        if (username == friends_username[i])
-                        {
-                            friends_grid[i].Background = brush;
-                            break;
-                        }
-                }
-            }
-            catch
-            {
-
-            }
-
-        }
-
         public void initMain()
         {
             ReplyUserFetch res = 
@@ -284,9 +307,11 @@ namespace Awoo
             else
             {
                 MessageBox.Show(res.reply, "Success");
-                dispatcherTimer.Stop();
+                //dispatcherTimer.Stop();
+                timer.Stop();
                 initFriends();
-                dispatcherTimer.Start();
+                timer.Start();
+                //dispatcherTimer.Start();
                 return;
             }
         }
@@ -312,9 +337,11 @@ namespace Awoo
             else
             {
                 MessageBox.Show(res.reply, "Success");
-                dispatcherTimer.Stop();
+                //dispatcherTimer.Stop();
+                timer.Stop();
                 initFriends();
-                dispatcherTimer.Start();
+                timer.Start();
+                //dispatcherTimer.Start();
                 return;
             }
         }
